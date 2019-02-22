@@ -22,22 +22,9 @@ const Details = ({playerCount}) => {
 }
 
 class GameBoard extends Component {
-
     constructor(props) {
-        super(props)
-        this.state = {
-            currentVoteIndex: -1,
-            playerCount: this.props.playerCount,
-            questPassFail: [true, false, undefined, undefined, undefined],
-        }
-    }
-
-    incrementVoteIndex = () => {
-        this.setState((prevState) => ({
-            ...prevState,
-            currentVoteIndex: prevState.currentVoteIndex + 1
-        }))
-    }
+        super(props);
+    }    
 
     render() {
         const source = require('../../pictures/game-boards/custom-variant.jpg')
@@ -50,9 +37,9 @@ class GameBoard extends Component {
         return (
             <div className="game-board" style={style}>
                 <div className="buffer"></div>
-                <Quests questPassFail={this.state.questPassFail} playerCount={this.state.playerCount}/>
-                <Votes currentVoteIndex={this.state.currentVoteIndex} incrementVoteIndex={this.incrementVoteIndex} />
-                <Details playerCount={this.state.playerCount}/>
+                <Quests questPassFail={this.props.questPassFail} playerCount={this.props.playerCount} />
+                <Votes currentVoteIndex={this.props.currentVoteIndex} incrementVoteIndex={this.props.incrementVoteIndex} />
+                <Details playerCount={this.props.playerCount}/>
             </div>
         );
     }

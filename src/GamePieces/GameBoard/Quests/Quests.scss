@@ -7,10 +7,11 @@
     background-color: rgba(0, 0, 0, 0.25);
 
     .quest-title {
+        position: relative;
+        bottom: 3rem;        
         font-weight: bold;
-        justify-items: baseline;
-        align-items: stretch;
         color: rgb(255, 255, 255);
+
     }
     .quest-markers {
         display: inline-grid;
@@ -19,13 +20,17 @@
 
         .quest-marker {
             position: relative;
-            .two-fail-quest {
-                position: absolute;
-            }
 
             img {
                 width: 120px;
             }
+         // todo make this look right
+         .two-fail-quest {
+            position: absolute;
+            bottom: 8rem;
+            color: white;
+            font-weight: bold;
+        }
 
          .empty-quest-marker {
             display: inline-grid;
@@ -48,10 +53,7 @@
                 font-size: 3rem;
             }
         }
-        // todo make this look right
-        .two-fail-quest {
-            color: white;
-        }
+       
     }
 
 

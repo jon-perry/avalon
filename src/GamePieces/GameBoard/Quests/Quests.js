@@ -2,8 +2,12 @@ import React, { Component } from 'react';
 import QuestMarker from './QuestMarker';
 import './Quests.scss'
 
-class Quests extends Component {
 
+
+class Quests extends Component {
+    handleClick = (event) => {
+        console.log(event.target);
+    }
     render() {
         const { questPassFail, playerCount } = this.props;
         return (

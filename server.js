@@ -1,6 +1,7 @@
 const io = require('socket.io')();
+
 io.on('connection', (client) => {
-    
+    console.log('tset');
 });
 
 const port = 8888;

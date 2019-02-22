@@ -1,15 +1,13 @@
-import React, { Component } from 'react';
-import GameBoard from './GamePieces/GameBoard/GameBoard';
+import React, { useEffect, useState } from 'react';
+import GameScreen from './GameScreen';
 import './App.css';
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <GameBoard playerCount={10}/>
-      </div>
-    );
-  }
+export default function App(props) {
+  const [playerCount, setPlayerCount] = useState(5);
+    
+  return (
+    <div className="App">
+      <GameScreen playerCount={playerCount}/>
+    </div>
+  );
 }
-
-export default App;

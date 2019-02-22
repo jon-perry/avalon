@@ -12,7 +12,7 @@
     .vote-markers {
         display: inline-grid;
         grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-        grid-column-gap: 1rem;
+        grid-column-gap: 4rem;
 
         .vote-marker {
             grid-column-end: span 1;
