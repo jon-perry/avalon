@@ -24,6 +24,7 @@ const Details = ({playerCount}) => {
 class GameBoard extends Component {
     constructor(props) {
         super(props);
+        this.state = props;
     }    
 
     render() {

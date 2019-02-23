@@ -27,6 +27,10 @@
         overflow: hidden;
         border-radius: 5px;
 
+        &.selected {
+            border: 5px solid black;
+        }
+
         .name {
             background-color: black;
             color: white;
@@ -39,10 +43,5 @@
             width: 100%;
         }
     }
-
-    
-
-    
-
 
 }
