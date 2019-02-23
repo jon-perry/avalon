@@ -19,15 +19,12 @@ export default function Game(props) {
         testPlayers.push({ playerName: `test ${i}`, cardImage: character, lastVote: vote });
     }
 
-    useQuestPhase(testPlayers);
-
-
     const [currentVoteIndex, setVoteIndex] = useState(-1);
     const [questPassFail, setQuestPassFail] = useState(defaultQuestPassFail);
 
     return (
         <div className="game-screen">
-            <PlayerInformations players={testPlayers} />
+            <PlayerInformations players={testPlayers}/>
             {/* <Test /> */}
             <GameBoard
                 currentVoteIndex={currentVoteIndex}
@@ -41,34 +38,5 @@ export default function Game(props) {
     function incrementVoteIndex() {
         setVoteIndex((currentVoteIndex + 1) % 5);
     }
-}
-
-
-function useQuestPhase(players) {
-    const questPlayerLimit = 4;
-    const [questPlayersSelected, setQuestPlayersSelected] = useState(0);
-
-    players.forEach((player) => {
-        const [selectedForQuest, setSelectedForQuest] = useState(false);
-        useEffect(() => {
-            const img = document.getElementById(player.playerName);
-            const handleMouseDown = (event) => {
-                if (event.button === 0) {
-                    if ((questPlayersSelected < questPlayerLimit) && !selectedForQuest) {
-                        setSelectedForQuest(true);
-                        setQuestPlayersSelected(questPlayersSelected + 1);
-                        img.src = TeamToken;
-                    } else if (selectedForQuest) {
-                        setSelectedForQuest(false);
-                        setQuestPlayersSelected(questPlayersSelected - 1);
-                        img.src = player.cardImage;
-                    }
-                }
-            };
-            img.addEventListener('mousedown', handleMouseDown);
-            return () => img.removeEventListener('mousedown', handleMouseDown);
-        });
-
-    });
 }
 
