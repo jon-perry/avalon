@@ -1,28 +1,16 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
+import React, { useEffect, useState } from 'react';
+import GameScreen from './GameScreen';
 import './App.css';
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
-  }
+export default function App(props) {
+  const [playerCount, setPlayerCount] = useState(5);
+  const [clientIsQuestLeader, setClientIsQuestLeader] = useState(false);
+  return (
+    <div className="App">
+      <button onClick={() => setClientIsQuestLeader(!clientIsQuestLeader)}>isQuestLeader</button>
+                                                          {/* makes it so the player count is 5-10 inclusive for testing */}
+      <button onClick={() => setPlayerCount( ( ((playerCount + 1) % 11) < 5 ? 5 : ((playerCount + 1) % 11) ))}>Increase Player Count</button>
+      <GameScreen playerCount={playerCount} clientIsQuestLeader={clientIsQuestLeader}/>
+    </div>
+  );
 }
-
-export default App;

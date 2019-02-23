@@ -1,0 +1,16 @@
+.game-screen {
+    width: 75%;
+    display: grid;
+    grid-template-areas: "player-informations-grid"
+                         "game-board";
+}
+
+// .team-token-img {
+//     width: 120px;
+// }
+
+// @media screen and (max-width: 800px) {
+//     .game-screen {
+//         display: none;
+//     }
+// }

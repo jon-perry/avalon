@@ -1,0 +1,28 @@
+.game-board {
+    // width: 85%;
+    grid-area: game-board;
+    display: grid;
+    grid-template-areas: "buffer buffer"
+                         "quests quests"
+                         "votes details";
+    .buffer {
+        grid-area: buffer;
+    }
+
+    .details {
+        grid-area: details;
+        display: grid;
+        font-weight: bold;
+        color: white;
+        justify-items: center;
+        align-items: center;
+        background-color: rgba(0, 0, 0, 0.75);
+
+        #player-count {
+            color: white;
+        }
+        #mininons-of-mordred {
+            color: rgba(75, 12, 12, 0.842);
+        }
+    }
+}
