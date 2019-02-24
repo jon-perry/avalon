@@ -17,9 +17,8 @@ const createPlayers = (playerCount) => {
     return players
 }
 
-export default function GameScreen(props) {
+export default function GameScreen({playerCount, clientIsQuestLeader}) {
 
-    const playerCount = props.playerCount;
     const [players, setPlayers] = useState(createPlayers(playerCount));
     const [questParticipants, setQuestParticipants] = useState(3);
 
@@ -32,7 +31,7 @@ export default function GameScreen(props) {
 
     return (
         <div className="game-screen">
-            <PlayerInformations players={createPlayers(playerCount)} active={true} numberOfParticipants={5}/>
+            <PlayerInformations players={createPlayers(playerCount)} active={clientIsQuestLeader} numQuestParticipants={4}/>
             {/* <Test /> */}
             <GameBoard
                 currentVoteIndex={currentVoteIndex}
