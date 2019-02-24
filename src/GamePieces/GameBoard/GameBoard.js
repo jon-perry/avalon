@@ -1,9 +1,10 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import './GameBoard.scss';
 import Votes from './Votes/Votes.js';
 import Quests from './Quests/Quests';
+import VoteResults from './Votes/VoteResults';
 
-const Details = ({playerCount}) => {
+const Details = ({ playerCount }) => {
     const combinations = {
         5: ["5 Players", "2 Minions of Morderd"],
         6: ["6 Players", "2 Minions of Morderd"],
@@ -13,37 +14,36 @@ const Details = ({playerCount}) => {
         10: ["10 Players", "4 Minions of Mordred"],
     }
 
+
+
     return (
         <div className="details">
             <div id="player-count">{combinations[playerCount][0]}</div>
-            <div id="mininons-of-mordred">{combinations[playerCount][1]}</div> 
+            <div id="mininons-of-mordred">{combinations[playerCount][1]}</div>
         </div>
     );
 }
 
-class GameBoard extends Component {
-    constructor(props) {
-        super(props);
-        this.state = props;
-    }    
+function GameBoard(props) {
 
-    render() {
-        const source = require('../../pictures/game-boards/custom-variant.jpg')
-        const style = {
-            backgroundImage: `url(${source})`,
-            height: "749px",
-            backgroundSize: "cover"
-        }
-
-        return (
-            <div className="game-board" style={style}>
-                <div className="buffer"></div>
-                <Quests questPassFail={this.props.questPassFail} playerCount={this.props.playerCount} />
-                <Votes currentVoteIndex={this.props.currentVoteIndex} incrementVoteIndex={this.props.incrementVoteIndex} />
-                <Details playerCount={this.props.playerCount}/>
-            </div>
-        );
+    const [showVotes, setShowVotes] = useState(true);
+    const source = require('../../pictures/game-boards/custom-variant.jpg')
+    const style = {
+        backgroundImage: `url(${source})`,
+        height: "749px",
+        backgroundSize: "cover"
     }
+
+    return (
+        <div className="game-board" style={style}>
+            <VoteResults showVotes={showVotes} players={props.players} />
+            <Quests questPassFail={props.questPassFail} playerCount={props.playerCount} />
+            <Votes currentVoteIndex={props.currentVoteIndex} incrementVoteIndex={props.incrementVoteIndex} />
+            <Details playerCount={props.playerCount} />
+            <button className="details" onClick={() => setShowVotes(!showVotes)}>{!showVotes ? 'Show Votes' : 'Hide Votes'}</button>
+
+        </div>
+    );
 }
 
 export default GameBoard;

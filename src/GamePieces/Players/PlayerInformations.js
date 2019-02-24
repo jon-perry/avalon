@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import Player from './Player';
 import './PlayerInformations.scss';
+import ApproveReject from '../GameBoard/Votes/ApproveReject';
 
 export default function PlayerInformation({ players, active, numQuestParticipants }) {
     const character = require('../../pictures/characters/loyalty-back.jpg');
     const [selectedPlayers, setSelectedPlayers] = useState([]);
+    const [showVotePhase, setShowVotePhase] = useState(false);
 
 
     // If activePlayer -> Presentation must change to allow for clicking
@@ -30,23 +32,25 @@ export default function PlayerInformation({ players, active, numQuestParticipant
 
     const handleConfirmClick = () => {
         setSelectedPlayers([]);
-        console.log('Confirmed')
+        setShowVotePhase(true);
         // keep track of selected players for history of this quest phase possibly
         // io.sendMessage ('questConfirm', {message});
     }
 
     return (
-        <div className="player-informations" style={{ gridTemplateColumns: `repeat(${players.length}, 1fr)` }}>
-            {players.map((player, characterCard) => (
-                <Player
-                    key={characterCard}
-                    playerName={player.playerName}
-                    cardImage={character}
-                    onClick={active ? () => handlePlayerClick(player.playerName) : undefined}
-                    selected={selectedPlayers.includes(player.playerName)}
-                />
-            ))}
-            {selectedPlayers.length === numQuestParticipants && <button onClick={handleConfirmClick} className="confirm-quest-players">Confirm</button>}
-        </div>
+        showVotePhase ? <ApproveReject setShowVotePhase={setShowVotePhase}/> :
+            <div className="player-informations" style={{ gridTemplateColumns: `repeat(${players.length}, 1fr)` }}>
+                {players.map((player, index) => (
+                    <Player
+                        key={index}
+                        playerName={player.playerName}
+                        cardImage={character}
+                        onClick={active ? () => handlePlayerClick(player.playerName) : undefined}
+                        selected={selectedPlayers.includes(player.playerName)}
+                    />
+                ))}
+                {selectedPlayers.length === numQuestParticipants &&
+                    (<button onClick={handleConfirmClick} className="confirm-quest-players">Confirm</button>)}
+            </div>
     );
 }

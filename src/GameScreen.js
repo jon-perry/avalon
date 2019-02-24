@@ -2,17 +2,17 @@ import React, { useState, useEffect } from 'react';
 import GameBoard from './GamePieces/GameBoard/GameBoard';
 import './GameScreen.scss';
 import PlayerInformations from './GamePieces/Players/PlayerInformations';
+import Test from './GamePieces/Test';
 
 
 const defaultQuestPassFail = [undefined, undefined, undefined, undefined, undefined];
-const TeamToken = require('./pictures/tokens/team-token.png');
 const character = require('./pictures/characters/loyalty-back.jpg');
 
 
 const createPlayers = (playerCount) => {
     const players = [];
     for (let i = 0; i < playerCount; i++) {
-        players.push({ playerName: `test ${i}`, cardImage: character })
+        players.push({ playerName: `test ${i}`, cardImage: character, vote: i % 2 === 0 ? 'approve' : 'reject' })
     }
     return players
 }
@@ -31,9 +31,10 @@ export default function GameScreen({playerCount, clientIsQuestLeader}) {
 
     return (
         <div className="game-screen">
-            <PlayerInformations players={createPlayers(playerCount)} active={clientIsQuestLeader} numQuestParticipants={4}/>
+            <PlayerInformations players={createPlayers(playerCount)} active={clientIsQuestLeader} numQuestParticipants={2}/>
             {/* <Test /> */}
             <GameBoard
+                players={createPlayers(playerCount)}
                 currentVoteIndex={currentVoteIndex}
                 playerCount={playerCount}
                 questPassFail={questPassFail}
@@ -43,7 +44,7 @@ export default function GameScreen({playerCount, clientIsQuestLeader}) {
     )
 
     function incrementVoteIndex() {
-        setVoteIndex((currentVoteIndex + 1) % 5);
+        setVoteIndex((currentVoteIndex + 1) % 6);
     }
 }
 

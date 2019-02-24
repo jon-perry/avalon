@@ -7,14 +7,14 @@ export default function App(props) {
   const [clientIsQuestLeader, setClientIsQuestLeader] = useState(true);
 
   const incrementPlayerCount = () => {
+                    /* makes it so the player count is 5-10 inclusive for testing */
     setPlayerCount((((playerCount + 1) % 11) < 5 ? 5 : ((playerCount + 1) % 11)));
   }
+
   return (
     <div className="App">
       <button onClick={() => setClientIsQuestLeader(!clientIsQuestLeader)}>isQuestLeader</button>
       <button onClick={() => incrementPlayerCount()}>Increase Player Count</button>
-      {/* makes it so the player count is 5-10 inclusive for testing */}
-      {/* <button onClick={() => incrementPlayerCount()}>Increase Player Countssss</button> */}
       <GameScreen playerCount={playerCount} clientIsQuestLeader={clientIsQuestLeader} setPlayerCount={setPlayerCount}/>
     </div>
   );
