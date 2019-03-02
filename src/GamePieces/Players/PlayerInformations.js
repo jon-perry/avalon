@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Player from './Player';
 import './PlayerInformations.scss';
 import ApproveReject from '../GameBoard/Votes/ApproveReject';
 
-export default function PlayerInformation({ players, active, numQuestParticipants }) {
+export default function PlayerInformation({ socket, players, active, numQuestParticipants }) {
     const character = require('../../pictures/characters/loyalty-back.jpg');
     const [selectedPlayers, setSelectedPlayers] = useState([]);
     const [showVotePhase, setShowVotePhase] = useState(false);
@@ -11,34 +11,45 @@ export default function PlayerInformation({ players, active, numQuestParticipant
 
     // If activePlayer -> Presentation must change to allow for clicking
 
-    // useEffect(() => {
-    //     io.on('messageType', (theMessage) => {
-    //         setSelectedPlayers(theMessage.selectedPlayers)
-    //     })
-    //     io.on('questConfirm'), (theMessage) => { 
-    //     }
-    // });
+    useEffect(() => {
+        const handlePlayerChoices = (message) => setSelectedPlayers(message.selectedPlayers);
+        socket.on('playerChoices', handlePlayerChoices);
+        return () => socket.removeListener('playerChoices', handlePlayerChoices);
+    }, []);
+
+    useEffect(() => {
+        const handleConfirm = (msg) => {
+            setShowVotePhase(true)
+        };
+        console.log('rerender');
+
+        socket.on('showVotePhase', handleConfirm);
+
+        return () => socket.on('showVotePhase', handleConfirm);
+    }, [])
+
+
 
     const handlePlayerClick = (name) => {
-        const nextState = selectedPlayers.slice();
+        let nextState = selectedPlayers.slice();
         if (!selectedPlayers.includes(name)) {
             nextState.push(name);
             setSelectedPlayers(nextState);
         } else {
-            setSelectedPlayers(nextState.filter((currentName) => currentName !== name))
+            nextState = nextState.filter((currentName) => currentName !== name);
+            setSelectedPlayers(nextState);
         }
-        // io.sendMessage('messageType', {theMessage})
+        socket.emit('playerChoice', nextState);
     }
 
     const handleConfirmClick = () => {
         setSelectedPlayers([]);
-        setShowVotePhase(true);
-        // keep track of selected players for history of this quest phase possibly
-        // io.sendMessage ('questConfirm', {message});
+        socket.emit('confirmPlayerChoices', undefined);
+        socket.emit('playerChoice', []);
     }
 
     return (
-        showVotePhase ? <ApproveReject setShowVotePhase={setShowVotePhase}/> :
+        showVotePhase ? <ApproveReject setShowVotePhase={setShowVotePhase} /> :
             <div className="player-informations" style={{ gridTemplateColumns: `repeat(${players.length}, 1fr)` }}>
                 {players.map((player, index) => (
                     <Player

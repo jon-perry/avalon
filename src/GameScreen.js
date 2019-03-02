@@ -9,8 +9,8 @@ import SuccessFail from './GamePieces/GameBoard/Votes/SuccessFail';
 const defaultQuestPassFail = [undefined, undefined, undefined, undefined, undefined];
 const character = require('./pictures/characters/loyalty-back.jpg');
 const createCharacter = (name) => require(`./pictures/characters/${name}.jpg`);
-const characters = ['assassin', 'loyal-servant-0', 'merlin', 'minion-of-mordred-0', 'mordred', 'morgana', 'oberon','percival',
-'loyal-servant-1', 'loyal-servant-2'];
+const characters = ['assassin', 'loyal-servant-0', 'merlin', 'minion-of-mordred-0', 'mordred', 'morgana', 'oberon', 'percival',
+    'loyal-servant-1', 'loyal-servant-2'];
 
 const createPlayers = (playerCount) => {
     const players = [];
@@ -20,8 +20,7 @@ const createPlayers = (playerCount) => {
     return players
 }
 
-export default function GameScreen({playerCount, clientIsQuestLeader}) {
-
+export default function GameScreen({socket, playerCount, clientIsQuestLeader }) {
     const [players, setPlayers] = useState(createPlayers(playerCount));
     const [questParticipants, setQuestParticipants] = useState(3);
 
@@ -34,8 +33,8 @@ export default function GameScreen({playerCount, clientIsQuestLeader}) {
 
     return (
         <div className="game-screen">
-            <SuccessFail />
-            <PlayerInformations players={createPlayers(playerCount)} active={clientIsQuestLeader} numQuestParticipants={2}/>
+            <SuccessFail isOnQuest={clientIsQuestLeader} />
+            <PlayerInformations socket={socket} players={createPlayers(playerCount)} active={clientIsQuestLeader} numQuestParticipants={2} />
             {/* <Test /> */}
             <GameBoard
                 players={createPlayers(playerCount)}
