@@ -3,16 +3,19 @@ import GameBoard from './GamePieces/GameBoard/GameBoard';
 import './GameScreen.scss';
 import PlayerInformations from './GamePieces/Players/PlayerInformations';
 import Test from './GamePieces/Test';
+import SuccessFail from './GamePieces/GameBoard/Votes/SuccessFail';
 
 
 const defaultQuestPassFail = [undefined, undefined, undefined, undefined, undefined];
 const character = require('./pictures/characters/loyalty-back.jpg');
-
+const createCharacter = (name) => require(`./pictures/characters/${name}.jpg`);
+const characters = ['assassin', 'loyal-servant-0', 'merlin', 'minion-of-mordred-0', 'mordred', 'morgana', 'oberon','percival',
+'loyal-servant-1', 'loyal-servant-2'];
 
 const createPlayers = (playerCount) => {
     const players = [];
     for (let i = 0; i < playerCount; i++) {
-        players.push({ playerName: `test ${i}`, cardImage: character, vote: i % 2 === 0 ? 'approve' : 'reject' })
+        players.push({ playerName: `Player ${i}`, cardImage: createCharacter(characters[i]), vote: i % 2 === 0 ? 'approve' : 'reject' })
     }
     return players
 }
@@ -31,6 +34,7 @@ export default function GameScreen({playerCount, clientIsQuestLeader}) {
 
     return (
         <div className="game-screen">
+            <SuccessFail />
             <PlayerInformations players={createPlayers(playerCount)} active={clientIsQuestLeader} numQuestParticipants={2}/>
             {/* <Test /> */}
             <GameBoard

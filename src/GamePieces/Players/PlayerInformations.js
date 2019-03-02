@@ -44,12 +44,12 @@ export default function PlayerInformation({ players, active, numQuestParticipant
                     <Player
                         key={index}
                         playerName={player.playerName}
-                        cardImage={character}
+                        cardImage={player.cardImage}
                         onClick={active ? () => handlePlayerClick(player.playerName) : undefined}
                         selected={selectedPlayers.includes(player.playerName)}
                     />
                 ))}
-                {selectedPlayers.length === numQuestParticipants &&
+                {selectedPlayers.length === numQuestParticipants && active &&
                     (<button onClick={handleConfirmClick} className="confirm-quest-players">Confirm</button>)}
             </div>
     );

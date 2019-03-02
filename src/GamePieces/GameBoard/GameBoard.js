@@ -3,6 +3,7 @@ import './GameBoard.scss';
 import Votes from './Votes/Votes.js';
 import Quests from './Quests/Quests';
 import VoteResults from './Votes/VoteResults';
+import SuccessFail from './Votes/SuccessFail';
 
 const Details = ({ playerCount }) => {
     const combinations = {

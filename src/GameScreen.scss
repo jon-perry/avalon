@@ -1,8 +1,8 @@
 .game-screen {
     width: 75%;
     display: grid;
-    grid-template-areas: "player-informations-grid"
-                         "game-board";
+    grid-template-areas: "player-informations-grid success-fail"
+                         "game-board game-board"
 }
 
 // .team-token-img {
