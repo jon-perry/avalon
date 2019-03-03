@@ -1,4 +1,4 @@
-export default {
+module.exports =  {
     5: {
         twoFailRequired: false,
         quests: [2, 3, 2, 3, 3]

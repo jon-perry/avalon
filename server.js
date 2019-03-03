@@ -1,4 +1,4 @@
-import questInfo from './src/GamePieces/GameBoard/Quests/QuestInfo';
+const questInfo = require('./src/GamePieces/GameBoard/Quests/QuestInfo');
 const io = require('socket.io')();
 let ids = [];
 // need to set up to have playersInformation in players to keep track of who voted for what as well as their character
@@ -16,7 +16,7 @@ let questNumber = 1;
 io.on('connection', (client) => {
     ids.push(client.id);
 
-    // handles client disconnecting but reconnecting -- uses their name (which will be unique) to update them in the players object
+    // handles client disconnecting then reconnecting -- uses their name (which will be unique) to update them in the players object
     client.on('login', info => {
         const players = gameInformation.players;
         if (info.name.value in players) {
@@ -31,8 +31,7 @@ io.on('connection', (client) => {
     });
 
     client.on('disconnect', () => {
-        const newIds = ids.slice().filter((id) => id != client.id);
-        ids = newIds;
+
     });
 
     client.on('playerChoice', playerChoices => {
