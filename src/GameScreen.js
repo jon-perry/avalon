@@ -20,7 +20,6 @@ const createPlayers = (playerCount) => {
 
 export default function GameScreen({ socket, playerCount, clientIsQuestLeader }) {
     const [isOnQuest, setIsOnQuest] = useState(false);
-    const [currentVoteIndex, setVoteIndex] = useState(-1);
     const [questPassFail, setQuestPassFail] = useState(defaultQuestPassFail);
 
     useEffect(() => {
@@ -28,9 +27,9 @@ export default function GameScreen({ socket, playerCount, clientIsQuestLeader })
             setIsOnQuest(msg);
         };
 
-        socket.on('showSuccessFailPhase', handle);
-        
-        return () => socket.removeListener('showSuccessFailPhase', handle);
+        socket.on('showQuestPhase', handle);
+
+        return () => socket.removeListener('showQuestPhase', handle);
     }, [])
 
     useEffect(() => {
@@ -38,31 +37,26 @@ export default function GameScreen({ socket, playerCount, clientIsQuestLeader })
             const questNumber = msg.questNumber;
             const result = msg.result;
             const newState = questPassFail.slice();
-            newState[questNumber - 1] = result;
+            newState[questNumber] = result;
             setQuestPassFail(newState);
         };
 
         socket.on('questResult', handle);
         return () => socket.removeListener('questResult', handle);
-    })
+    }, [])
 
     return (
         <div className="game-screen">
-            <SuccessFail socket={socket} isOnQuest={isOnQuest} />
+            <SuccessFail socket={socket} isOnQuest={isOnQuest} isGood={true} />
             <PlayerInformations socket={socket} players={createPlayers(playerCount)} active={clientIsQuestLeader} numQuestParticipants={2} />
             {/* <Test /> */}
             <GameBoard
+                socket={socket}
                 players={createPlayers(playerCount)}
-                currentVoteIndex={currentVoteIndex}
                 playerCount={playerCount}
                 questPassFail={questPassFail}
-                incrementVoteIndex={incrementVoteIndex}
             />
         </div>
     )
-
-    function incrementVoteIndex() {
-        setVoteIndex((currentVoteIndex + 1) % 6);
-    }
 }
 

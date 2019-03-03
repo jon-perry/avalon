@@ -20,6 +20,7 @@ export default function PlayerInformation({ socket, players, active, numQuestPar
     useEffect(() => {
         const handleConfirm = (msg) => {
             setShowVotePhase(msg)
+            setSelectedPlayers([]);
         };
         socket.on('showVotePhase', handleConfirm);
 
@@ -46,7 +47,7 @@ export default function PlayerInformation({ socket, players, active, numQuestPar
     }
 
     return (
-        showVotePhase ? <ApproveReject socket={socket} setShowVotePhase={setShowVotePhase} /> :
+        true ? <ApproveReject socket={socket} setShowVotePhase={setShowVotePhase} /> :
             <div className="player-informations" style={{ gridTemplateColumns: `repeat(${players.length}, 1fr)` }}>
                 {players.map((player, index) => (
                     <Player

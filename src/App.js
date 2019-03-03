@@ -7,7 +7,7 @@ const socket = io.connect('localhost:8888');
 
 export default function App(props) {
   const [playerCount, setPlayerCount] = useState(5);
-  const [loggedIn, setLoggedIn] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(true);
   const [clientIsQuestLeader, setClientIsQuestLeader] = useState(true);
 
   const incrementPlayerCount = () => {
@@ -27,7 +27,7 @@ export default function App(props) {
     <div className="App">
       <button onClick={() => setClientIsQuestLeader(!clientIsQuestLeader)}>isQuestLeader</button>
       <button onClick={() => incrementPlayerCount()}>Increase Player Count</button>
-      {true ? <GameScreen socket={socket} playerCount={playerCount} clientIsQuestLeader={clientIsQuestLeader} setPlayerCount={setPlayerCount} /> : <LoginScreen socket={socket} />}
+      {loggedIn ? <GameScreen socket={socket} playerCount={playerCount} clientIsQuestLeader={clientIsQuestLeader} setPlayerCount={setPlayerCount} /> : <LoginScreen socket={socket} />}
     </div>
   );
 }

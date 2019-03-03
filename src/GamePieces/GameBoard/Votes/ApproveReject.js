@@ -4,7 +4,7 @@ import Reject from '../../Tokens/Reject';
 import './ApproveReject.scss';
 
 
-export default function ApproveReject({ socket }) {
+export default function ApproveReject({ socket, setShowVotePhase}) {
     const [voteChoice, setVoteChoice] = useState();
 
     const handleClick = (choice) => {
@@ -13,6 +13,8 @@ export default function ApproveReject({ socket }) {
     
     const handleConfirm = () => {
         socket.emit('voteChoice', voteChoice);
+        setVoteChoice(undefined);
+        setShowVotePhase(false);
     };
 
     // useEffect to serd handleConfirm to server
