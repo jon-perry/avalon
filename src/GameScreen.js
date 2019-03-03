@@ -5,7 +5,6 @@ import PlayerInformations from './GamePieces/Players/PlayerInformations';
 import Test from './GamePieces/Test';
 import SuccessFail from './GamePieces/GameBoard/Votes/SuccessFail';
 
-
 const defaultQuestPassFail = [undefined, undefined, undefined, undefined, undefined];
 const character = require('./pictures/characters/loyalty-back.jpg');
 const createCharacter = (name) => require(`./pictures/characters/${name}.jpg`);
@@ -20,20 +19,37 @@ const createPlayers = (playerCount) => {
     return players
 }
 
-export default function GameScreen({socket, playerCount, clientIsQuestLeader }) {
-    const [players, setPlayers] = useState(createPlayers(playerCount));
-    const [questParticipants, setQuestParticipants] = useState(3);
-
+export default function GameScreen({ socket, playerCount, clientIsQuestLeader }) {
+    const [isOnQuest, setIsOnQuest] = useState(false);
     const [currentVoteIndex, setVoteIndex] = useState(-1);
     const [questPassFail, setQuestPassFail] = useState(defaultQuestPassFail);
 
-    const handleQuestConfirmation = () => {
+    useEffect(() => {
+        const handle = msg => {
+            setIsOnQuest(msg);
+        };
 
-    }
+        socket.on('showSuccessFailPhase', handle);
+        
+        return () => socket.removeListener('showSuccessFailPhase', handle);
+    }, [])
+
+    useEffect(() => {
+        const handle = msg => {
+            const questNumber = msg.questNumber;
+            const result = msg.result;
+            const newState = questPassFail.slice();
+            newState[questNumber - 1] = result;
+            setQuestPassFail(newState);
+        };
+
+        socket.on('questResult', handle);
+        return () => socket.removeListener('questResult', handle);
+    })
 
     return (
         <div className="game-screen">
-            <SuccessFail isOnQuest={clientIsQuestLeader} />
+            <SuccessFail socket={socket} isOnQuest={isOnQuest} />
             <PlayerInformations socket={socket} players={createPlayers(playerCount)} active={clientIsQuestLeader} numQuestParticipants={2} />
             {/* <Test /> */}
             <GameBoard

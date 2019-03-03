@@ -19,13 +19,11 @@ export default function PlayerInformation({ socket, players, active, numQuestPar
 
     useEffect(() => {
         const handleConfirm = (msg) => {
-            setShowVotePhase(true)
+            setShowVotePhase(msg)
         };
-        console.log('rerender');
-
         socket.on('showVotePhase', handleConfirm);
 
-        return () => socket.on('showVotePhase', handleConfirm);
+        return () => socket.removeListener('showVotePhase', handleConfirm);
     }, [])
 
 
@@ -45,11 +43,10 @@ export default function PlayerInformation({ socket, players, active, numQuestPar
     const handleConfirmClick = () => {
         setSelectedPlayers([]);
         socket.emit('confirmPlayerChoices', undefined);
-        socket.emit('playerChoice', []);
     }
 
     return (
-        showVotePhase ? <ApproveReject setShowVotePhase={setShowVotePhase} /> :
+        showVotePhase ? <ApproveReject socket={socket} setShowVotePhase={setShowVotePhase} /> :
             <div className="player-informations" style={{ gridTemplateColumns: `repeat(${players.length}, 1fr)` }}>
                 {players.map((player, index) => (
                     <Player

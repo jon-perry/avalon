@@ -1,20 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Approve from '../../Tokens/Approve';
 import Reject from '../../Tokens/Reject';
 import './ApproveReject.scss';
 
 
-export default function ApproveReject({ setShowVotePhase }) {
+export default function ApproveReject({ socket }) {
     const [voteChoice, setVoteChoice] = useState();
 
     const handleClick = (choice) => {
         setVoteChoice(choice);
     }
-
+    
     const handleConfirm = () => {
-        setVoteChoice();
-        setShowVotePhase(false);
-    }
+        socket.emit('voteChoice', voteChoice);
+    };
 
     // useEffect to serd handleConfirm to server
 
