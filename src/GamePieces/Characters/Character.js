@@ -52,15 +52,4 @@ class Character {
     getAlliance = () => {
         return this.loyalty;
     }
-
-    isSeenByMerlin = () => {
-        return this.seenByMerlin;
-    }
-
-    isSeenByEvil = () => {
-        return this.seenByEvil;
-    }
-
-    isMerlin()
-
 }

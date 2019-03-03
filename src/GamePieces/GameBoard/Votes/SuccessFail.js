@@ -20,7 +20,7 @@ export default function ({socket, isOnQuest }) {
 
 
   return (
-    isOnQuest ?
+    true ?
       <div className="success-fail-vote">
         <div className="title">Vote Success or Fail</div>
         <Success orientation="front" onClick={() => onClick('success')} selected={decision === 'success'} />

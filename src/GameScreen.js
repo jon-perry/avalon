@@ -2,12 +2,11 @@ import React, { useState, useEffect } from 'react';
 import GameBoard from './GamePieces/GameBoard/GameBoard';
 import './GameScreen.scss';
 import PlayerInformations from './GamePieces/Players/PlayerInformations';
-import Test from './GamePieces/Test';
 import SuccessFail from './GamePieces/GameBoard/Votes/SuccessFail';
 
 const defaultQuestPassFail = [undefined, undefined, undefined, undefined, undefined];
-const character = require('./pictures/characters/loyalty-back.jpg');
 const createCharacter = (name) => require(`./pictures/characters/${name}.jpg`);
+
 const characters = ['assassin', 'loyal-servant-0', 'merlin', 'minion-of-mordred-0', 'mordred', 'morgana', 'oberon', 'percival',
     'loyal-servant-1', 'loyal-servant-2'];
 

@@ -1,34 +1,10 @@
 import React from 'react';
+import gameQuestInfo from './QuestInfo';
 
 const questPass = require('../../../pictures/tokens/quest-pass(level-balance).png');
 const questFail = require('../../../pictures/tokens/quest-fail(level-balance).png');
 
-const gameQuestInfo = {
-    5: {
-        twoFailRequired: false,
-        quests: [2, 3, 2, 3, 3]
-    },
-    6: {
-        twoFailRequired: false,
-        quests: [2, 3, 4, 3, 4]
-    },
-    7: {
-        twoFailRequired: true,
-        quests: [2, 3, 3, 4, 4]
-    },
-    8: {
-        twoFailRequired: true,
-        quests: [3, 4, 4, 5, 5]
-    },
-    9: {
-        twoFailRequired: true,
-        quests: [3, 4, 4, 5, 5]
-    },
-    10: {
-        twoFailRequired: true,
-        quests: [3, 4, 4, 5, 5]
-    },
-}
+// const gameQuestInfo = require('./QuestInfo').default;
 
 const QuestMarker = ({ questIndex, questPassed, playerCount, handleQuestClick }) => {
     const questImage = questPassed !== undefined ? (questPassed ? questPass : questFail) : undefined;

@@ -3,7 +3,6 @@ import './GameBoard.scss';
 import Votes from './Votes/Votes.js';
 import Quests from './Quests/Quests';
 import VoteResults from './Votes/VoteResults';
-import SuccessFail from './Votes/SuccessFail';
 
 const Details = ({ playerCount }) => {
     const combinations = {
@@ -27,7 +26,7 @@ const Details = ({ playerCount }) => {
 
 function GameBoard(props) {
 
-    const [showVotes, setShowVotes] = useState(true);
+    const [showVotes, setShowVotes] = useState(false);
     const source = require('../../pictures/game-boards/custom-variant.jpg')
     const style = {
         backgroundImage: `url(${source})`,
