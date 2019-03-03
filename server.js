@@ -11,7 +11,10 @@ let gameInformation = {
     approveRejectVotes: [],
     successFailVotes: [],
     failedTeamVotes: 0,
-}
+};
+
+const questPassFail = [undefined, undefined, undefined, undefined, undefined];
+
 let history = [];
 let questNumber = 0;
 
@@ -66,10 +69,10 @@ io.on('connection', (client) => {
     client.on('successFailConfirmed', (choice) => {
         let successFailVotes = gameInformation.successFailVotes
         successFailVotes.push(choice);
-        // console.log(gameInformation.successFailVotes);
-        console.log('checking if quests is of appropiate length', questInfo[5].quests[questNumber], successFailVotes.length);
         if (successFailVotes.length === questInfo[5/*playerCount*/].quests[questNumber]) {
-            io.emit('questResult', { questNumber: questNumber, result: checkIfQuestPassFail(2, questNumber, gameInformation.successFailVotes) })
+            const result = checkIfQuestPassFail(2, questNumber, gameInformation.successFailVotes);
+            io.emit('questResult', { questNumber: questNumber, result:  result})
+            questPassFail[questNumber] = result;
             questNumber = (questNumber + 1) % 5;
             endRound();
         }
@@ -85,17 +88,25 @@ const port = 8888;
 io.listen(port);
 console.log('servering running...');
 
-const checkIfWinner = (state) => {
-
+const checkIfWinner = () => {
+    console.log('checking for winner');
+    if (gameInformation.failedTeamVotes.length === 5 ||  questPassFail.filter((quest) => quest === false).length === 3){
+        return 'Evil';
+    }
 }
 
 const checkIfQuestPassFail = (numPlayers, questNumber, successFailVotes) => {
     const requiredFailVotes = (numPlayers > 6 && questNumber === 3) ? 2 : 1;
     let failVotes = 0;
     successFailVotes.forEach((vote) => vote === 'fail' ? failVotes++ : undefined);
-    return !(failVotes >= requiredFailVotes);
+    return failVotes < requiredFailVotes;
 };
 
 const endRound = () => {
     history.push(gameInformation);
+    gameInformation.successFailVotes = [];
+    const winningTeam = checkIfWinner();
+    if (winningTeam) {
+        console.log(winningTeam);
+    }
 }

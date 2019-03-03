@@ -43,11 +43,11 @@ export default function GameScreen({ socket, playerCount, clientIsQuestLeader })
 
         socket.on('questResult', handle);
         return () => socket.removeListener('questResult', handle);
-    }, [])
+    }, [questPassFail])
 
     return (
         <div className="game-screen">
-            <SuccessFail socket={socket} isOnQuest={isOnQuest} isGood={true} />
+            <SuccessFail socket={socket} isOnQuest={true} isGood={false} />
             <PlayerInformations socket={socket} players={createPlayers(playerCount)} active={clientIsQuestLeader} numQuestParticipants={2} />
             {/* <Test /> */}
             <GameBoard
