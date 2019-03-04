@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import GameScreen from './GameScreen';
 import './App.css';
 import LoginScreen from './Login/LoginScreen'
+
+export const SocketContext = React.createContext(null);
+
 const io = require('socket.io-client');
 const socket = io.connect('localhost:8888');
 
@@ -24,10 +27,12 @@ export default function App(props) {
   }, [loggedIn]);
 
   return (
-    <div className="App">
-      <button onClick={() => setClientIsQuestLeader(!clientIsQuestLeader)}>isQuestLeader</button>
-      <button onClick={() => incrementPlayerCount()}>Increase Player Count</button>
-      {loggedIn ? <GameScreen socket={socket} playerCount={playerCount} clientIsQuestLeader={clientIsQuestLeader} setPlayerCount={setPlayerCount} /> : <LoginScreen socket={socket} />}
-    </div>
+    <SocketContext.Provider value={socket}>
+      <div className="App">
+        <button onClick={() => setClientIsQuestLeader(!clientIsQuestLeader)}>isQuestLeader</button>
+        <button onClick={() => incrementPlayerCount()}>Increase Player Count</button>
+        {loggedIn ? <GameScreen playerCount={playerCount} clientIsQuestLeader={clientIsQuestLeader} setPlayerCount={setPlayerCount} /> : <LoginScreen />}
+      </div>
+    </SocketContext.Provider>
   );
 }

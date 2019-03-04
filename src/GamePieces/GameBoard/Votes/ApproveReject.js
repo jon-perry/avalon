@@ -1,16 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import Approve from '../../Tokens/Approve';
 import Reject from '../../Tokens/Reject';
 import './ApproveReject.scss';
+import { SocketContext } from '../../../App'
 
 
-export default function ApproveReject({ socket, setShowVotePhase}) {
+export default function ApproveReject({ setShowVotePhase }) {
     const [voteChoice, setVoteChoice] = useState();
+    const socket = useContext(SocketContext);
 
     const handleClick = (choice) => {
         setVoteChoice(choice);
     }
-    
+
     const handleConfirm = () => {
         socket.emit('voteChoice', voteChoice);
         setVoteChoice(undefined);

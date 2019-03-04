@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import { SocketContext } from '../App';
 
 
 // could add some kind of persistence here to check if they've logged in previously. have to figure out how to do that
 // this is bare bones for now
-export default function ({ socket }) {
-
+export default function (props) {
+    const socket = useContext(SocketContext);
     const name = useFormInput('Type your name here');
     const email = useFormInput('Type your email here')
 

@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import './Votes.scss'
+import React, { useState, useEffect, useContext } from 'react';
+import './Votes.scss';
+import { SocketContext } from '../../../App';
 
 const voteMarker = require("../../../pictures/tokens/vote-marker.png");
 
@@ -12,7 +13,8 @@ const VoteMarker = ({ currentVoteIndex, voteIndex }) => (
     </div>
 )
 
-export default function Votes({ socket }) {
+export default function Votes() {
+    const socket = useContext(SocketContext);
     const currentVoteIndex = useVoteIndex(socket);
     return (
         <div className="votes">

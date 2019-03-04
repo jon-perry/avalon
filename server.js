@@ -71,7 +71,7 @@ io.on('connection', (client) => {
         successFailVotes.push(choice);
         if (successFailVotes.length === questInfo[5/*playerCount*/].quests[questNumber]) {
             const result = checkIfQuestPassFail(2, questNumber, gameInformation.successFailVotes);
-            io.emit('questResult', { questNumber: questNumber, result:  result})
+            io.emit('questResult', { questNumber: questNumber, result: result })
             questPassFail[questNumber] = result;
             questNumber = (questNumber + 1) % 5;
             endRound();
@@ -90,7 +90,7 @@ console.log('servering running...');
 
 const checkIfWinner = () => {
     console.log('checking for winner');
-    if (gameInformation.failedTeamVotes.length === 5 ||  questPassFail.filter((quest) => quest === false).length === 3){
+    if (gameInformation.failedTeamVotes.length === 5 || questPassFail.filter((quest) => quest === false).length === 3) {
         return 'Evil';
     }
 }

@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import GameBoard from './GamePieces/GameBoard/GameBoard';
 import './GameScreen.scss';
 import PlayerInformations from './GamePieces/Players/PlayerInformations';
 import SuccessFail from './GamePieces/GameBoard/Votes/SuccessFail';
+import { SocketContext } from './App';
 
 const defaultQuestPassFail = [undefined, undefined, undefined, undefined, undefined];
 const createCharacter = (name) => require(`./pictures/characters/${name}.jpg`);
@@ -18,7 +19,8 @@ const createPlayers = (playerCount) => {
     return players
 }
 
-export default function GameScreen({ socket, playerCount, clientIsQuestLeader }) {
+export default function GameScreen({ playerCount, clientIsQuestLeader }) {
+    const socket = useContext(SocketContext);
     const [isOnQuest, setIsOnQuest] = useState(false);
     const [questPassFail, setQuestPassFail] = useState(defaultQuestPassFail);
 
@@ -47,11 +49,10 @@ export default function GameScreen({ socket, playerCount, clientIsQuestLeader })
 
     return (
         <div className="game-screen">
-            <SuccessFail socket={socket} isOnQuest={true} isGood={false} />
-            <PlayerInformations socket={socket} players={createPlayers(playerCount)} active={clientIsQuestLeader} numQuestParticipants={2} />
+            <SuccessFail isOnQuest={true} isGood={false} />
+            <PlayerInformations players={createPlayers(playerCount)} active={clientIsQuestLeader} numQuestParticipants={2} />
             {/* <Test /> */}
             <GameBoard
-                socket={socket}
                 players={createPlayers(playerCount)}
                 playerCount={playerCount}
                 questPassFail={questPassFail}

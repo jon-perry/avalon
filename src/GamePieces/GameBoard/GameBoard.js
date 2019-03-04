@@ -25,7 +25,6 @@ const Details = ({ playerCount }) => {
 }
 
 export default function GameBoard(props) {
-
     const [showVotes, setShowVotes] = useState(false);
     const source = require('../../pictures/game-boards/custom-variant.jpg')
     const style = {
@@ -38,7 +37,7 @@ export default function GameBoard(props) {
         <div className="game-board" style={style}>
             <VoteResults showVotes={showVotes} players={props.players} />
             <Quests questPassFail={props.questPassFail} playerCount={props.playerCount} />
-            <Votes socket={props.socket} />
+            <Votes />
             <Details playerCount={props.playerCount} />
             <button className="details" onClick={() => setShowVotes(!showVotes)}>{!showVotes ? 'Show Votes' : 'Hide Votes'}</button>
 

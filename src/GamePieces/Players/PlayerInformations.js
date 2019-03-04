@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Player from './Player';
 import './PlayerInformations.scss';
 import ApproveReject from '../GameBoard/Votes/ApproveReject';
+import { SocketContext } from '../../App';
 
-export default function PlayerInformation({ socket, players, active, numQuestParticipants }) {
+export default function PlayerInformation({ players, active, numQuestParticipants }) {
+    const socket = useContext(SocketContext);
     const character = require('../../pictures/characters/loyalty-back.jpg');
     const [selectedPlayers, setSelectedPlayers] = useState([]);
     const [showVotePhase, setShowVotePhase] = useState(false);
@@ -47,7 +49,7 @@ export default function PlayerInformation({ socket, players, active, numQuestPar
     }
 
     return (
-        true ? <ApproveReject socket={socket} setShowVotePhase={setShowVotePhase} /> :
+        true ? <ApproveReject setShowVotePhase={setShowVotePhase} /> :
             <div className="player-informations" style={{ gridTemplateColumns: `repeat(${players.length}, 1fr)` }}>
                 {players.map((player, index) => (
                     <Player

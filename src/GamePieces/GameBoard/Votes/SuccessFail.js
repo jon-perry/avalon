@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import Success from './Success'
 import Fail from './Fail'
 import './SuccessFail.scss';
+import { SocketContext } from "../../../App";
 
 
-export default function ({socket, isOnQuest, isGood }) {
+export default function ({ isOnQuest, isGood }) {
+  const socket = useContext(SocketContext);
   const [decision, setDecision] = useState(undefined);
-  
+
   const onClick = (choice) => {
     setDecision(choice);
   }
