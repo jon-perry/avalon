@@ -5,7 +5,7 @@ const io = require('socket.io')();
 let ids = [];
 // need to set up to have playersInformation in players to keep track of who voted for what as well as their character
 
-let presetCharacters0 = CHARACTER_GAME_VARIANTS[5][Math.floor(Math.random() * 2)];
+let presetCharacters0 = CHARACTER_GAME_VARIANTS[5][2];
 const defaultGameVariant = { ladyInTheWater: false, questSelecting: false, characters: presetCharacters0 }
 
 let gameState = {
@@ -34,6 +34,7 @@ io.on('connection', (client) => {
             numPlayersConnected++;
         } else {
             players[info.name.value] = { name: info.name.value, clientId: client.id, character: undefined }
+            numPlayersConnected === 3 ? postWhoClientCanSee(players[info.name.value]) : null;
             numPlayersConnected++;
         }
         // TODO change this to say true or false
@@ -154,30 +155,37 @@ const shuffle = (array) => {
 
 const assignCharacters = (players) => {
     console.log('assigning characters');
+    const characters = shuffle(presetCharacters0);
     let characterIndex = 0;
     // assign a character to players
     for (nameKey in players) {
-        players[nameKey].character = presetCharacters0[characterIndex++];
+        players[nameKey].character = characters[characterIndex++];
     }
 
     // tell each client who they can and cannot see
     for (nameKey in players) {
-        postWhoClientCanSee(players[nameKey]);
+        postWhoClientSees(players[nameKey]);
     }
 
 }
 
-const postWhoClientCanSee = (client) => {
+const postWhoClientSees = (client) => {
     console.log(client);
-    const playersInfo = []; 
+    const playersInfo = [];
     const players = gameState.players;
-        for (nameKey in players) {
-            if (client.clientId === players[nameKey].clientId || WHO_CHARACTER_CAN_SEE[client.character].includes(players[nameKey].character)){
-               playersInfo.push({name: players[nameKey].name, cardImage: players[nameKey].character})
+    for (nameKey in players) {
+        if (client.clientId === players[nameKey].clientId || WHO_CHARACTER_CAN_SEE[client.character].includes(players[nameKey].character)) {
+            // handle the case of percival seeing morgana as merlin
+            if (client.character === 'percival' && players[nameKey].character === 'morgana') {
+                console.log('morgana should appear as merlin');
+                playersInfo.push({ name: players[nameKey].name, cardImage: 'merlin' })
             } else {
-                playersInfo.push({name: players[nameKey].name, cardImage: 'loyalty-back'})
+                playersInfo.push({ name: players[nameKey].name, cardImage: players[nameKey].character })
             }
+        } else {
+            playersInfo.push({ name: players[nameKey].name, cardImage: 'loyalty-back' })
         }
+    }
     io.to(`${client.clientId}`).emit('gamePlayers', playersInfo);
     // client.emit('players', testPlayers);
 };
