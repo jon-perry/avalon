@@ -49,7 +49,7 @@ export default function PlayerInformation({ players, active, numQuestParticipant
     }
 
     return (
-        true ? <ApproveReject setShowVotePhase={setShowVotePhase} /> :
+        showVotePhase ? <ApproveReject setShowVotePhase={setShowVotePhase} /> :
             <div className="player-informations" style={{ gridTemplateColumns: `repeat(${players.length}, 1fr)` }}>
                 {players.map((player, index) => (
                     <Player

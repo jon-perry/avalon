@@ -4,7 +4,7 @@ import Votes from './Votes/Votes.js';
 import Quests from './Quests/Quests';
 import VoteResults from './Votes/VoteResults';
 
-const Details = ({ playerCount }) => {
+const Details = ({ playerCount, questLeader }) => {
     const combinations = {
         5: ["5 Players", "2 Minions of Morderd"],
         6: ["6 Players", "2 Minions of Morderd"],
@@ -19,6 +19,7 @@ const Details = ({ playerCount }) => {
     return (
         <div className="details">
             <div id="player-count">{combinations[playerCount][0]}</div>
+            <div id="quest-leader">{`Quest Leader: ${questLeader}`}</div>
             <div id="mininons-of-mordred">{combinations[playerCount][1]}</div>
         </div>
     );
@@ -38,7 +39,7 @@ export default function GameBoard(props) {
             <VoteResults showVotes={showVotes} players={props.players} />
             <Quests questPassFail={props.questPassFail} playerCount={props.playerCount} />
             <Votes />
-            <Details playerCount={props.playerCount} />
+            <Details playerCount={props.playerCount} questLeader={props.questLeader} />
             <button className="details" onClick={() => setShowVotes(!showVotes)}>{!showVotes ? 'Show Votes' : 'Hide Votes'}</button>
 
         </div>
