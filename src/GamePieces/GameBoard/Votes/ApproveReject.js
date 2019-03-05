@@ -15,7 +15,7 @@ export default function ApproveReject({ setShowVotePhase }) {
 
     const handleConfirm = () => {
         socket.emit('voteChoice', voteChoice);
-        setVoteChoice(undefined);
+        // setVoteChoice(undefined);
         setShowVotePhase(false);
     };
 

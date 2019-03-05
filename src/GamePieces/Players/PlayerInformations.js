@@ -7,46 +7,10 @@ import { SocketContext } from '../../App';
 export default function PlayerInformation({ players, active, numQuestParticipants }) {
     const socket = useContext(SocketContext);
     const character = require('../../pictures/characters/loyalty-back.jpg');
-    const [selectedPlayers, setSelectedPlayers] = useState([]);
-    const [showVotePhase, setShowVotePhase] = useState(false);
+    const [selectedPlayers, showVotePhase, setShowVotePhase, handlePlayerClick, handleConfirmClick] = useCustomState(socket);
 
 
     // If activePlayer -> Presentation must change to allow for clicking
-
-    useEffect(() => {
-        const handlePlayerChoices = (message) => setSelectedPlayers(message.selectedPlayers);
-        socket.on('playerChoices', handlePlayerChoices);
-        return () => socket.removeListener('playerChoices', handlePlayerChoices);
-    }, []);
-
-    useEffect(() => {
-        const handleConfirm = (msg) => {
-            setShowVotePhase(msg)
-            setSelectedPlayers([]);
-        };
-        socket.on('showVotePhase', handleConfirm);
-
-        return () => socket.removeListener('showVotePhase', handleConfirm);
-    }, [])
-
-
-
-    const handlePlayerClick = (name) => {
-        let nextState = selectedPlayers.slice();
-        if (!selectedPlayers.includes(name)) {
-            nextState.push(name);
-            setSelectedPlayers(nextState);
-        } else {
-            nextState = nextState.filter((currentName) => currentName !== name);
-            setSelectedPlayers(nextState);
-        }
-        socket.emit('playerChoice', nextState);
-    }
-
-    const handleConfirmClick = () => {
-        setSelectedPlayers([]);
-        socket.emit('confirmPlayerChoices', undefined);
-    }
 
     return (
         showVotePhase ? <ApproveReject setShowVotePhase={setShowVotePhase} /> :
@@ -65,3 +29,44 @@ export default function PlayerInformation({ players, active, numQuestParticipant
             </div>
     );
 }
+
+
+const useCustomState = (socket) => {
+    const [selectedPlayers, setSelectedPlayers] = useState([]);
+    const [showVotePhase, setShowVotePhase] = useState(false);
+
+    useEffect(() => {
+        const handlePlayerChoices = (msg) => setSelectedPlayers(msg);
+        socket.on('playerChoices', handlePlayerChoices);
+        return () => socket.removeListener('playerChoices', handlePlayerChoices);
+    }, []);
+
+    useEffect(() => {
+        const handleConfirm = (msg) => {
+            setShowVotePhase(msg)
+            setSelectedPlayers([]);
+        };
+        socket.on('showVotePhase', handleConfirm);
+
+        return () => socket.removeListener('showVotePhase', handleConfirm);
+    }, [])
+
+    const handlePlayerClick = (name) => {
+        let nextState = selectedPlayers.slice();
+        if (!selectedPlayers.includes(name)) {
+            nextState.push(name);
+            setSelectedPlayers(nextState);
+        } else {
+            nextState = nextState.filter((currentName) => currentName !== name);
+            setSelectedPlayers(nextState);
+        }
+        socket.emit('playerChoice', nextState);
+    }
+
+    const handleConfirmClick = () => {
+        setSelectedPlayers([]);
+        socket.emit('confirmPlayerChoices', undefined);
+    }
+
+    return [selectedPlayers, showVotePhase, setShowVotePhase, handlePlayerClick, handleConfirmClick];
+};

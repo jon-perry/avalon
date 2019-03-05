@@ -23,12 +23,12 @@ export default function ({ isOnQuest, isGood }) {
 
 
   return (
-    true ?
+    isOnQuest ?
       <div className="success-fail-vote">
         <div className="title">Vote Success or Fail</div>
         <Success orientation="front" onClick={() => onClick('success')} selected={decision === 'success'} />
         {!isGood && <Fail orientation="front" onClick={() => onClick('fail')} selected={decision === 'fail'} />}
-        {true && <button onClick={() => handleConfirm()} style={{ gridRow: "2 / 2" }}>Confim</button>}
+        {decision && <button onClick={() => handleConfirm()} style={{ gridRow: "2 / 2" }}>Confim</button>}
       </div> : null
   );
 }

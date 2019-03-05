@@ -12,7 +12,6 @@ let gameState = {
     gameVariant: defaultGameVariant,
     players: {},
     selectedQuestPlayers: [],
-    questPlayers: [],
     approveRejectVotes: [],
     successFailVotes: [],
     failedTeamVotes: 0,
@@ -25,7 +24,6 @@ let history = [];
 let questNumber = 0;
 let numPlayersConnected = 0;
 io.on('connection', (client) => {
-    console.log(numPlayersConnected);
     // handles client disconnecting then reconnecting -- uses their name (which will be unique) to update them in the players object -- needs
     client.on('login', info => {
         const players = gameState.players;
@@ -34,14 +32,15 @@ io.on('connection', (client) => {
             numPlayersConnected++;
         } else {
             players[info.name.value] = { name: info.name.value, clientId: client.id, character: undefined }
-            numPlayersConnected === 3 ? postWhoClientCanSee(players[info.name.value]) : null;
+            numPlayersConnected === 5 ? postWhoClientCanSee(players[info.name.value]) : null;
             numPlayersConnected++;
         }
         // TODO change this to say true or false
         client.emit('loggedIn', true);
         console.log(numPlayersConnected);
-        if (numPlayersConnected % 3 === 0) {
+        if (numPlayersConnected % 5 === 0) {
             assignCharacters(gameState.players);
+            emitNumQuestParticipants(QUEST_INFO[5].quests[0]);
         }
     });
 
@@ -51,7 +50,7 @@ io.on('connection', (client) => {
 
     client.on('playerChoice', playerChoices => {
         gameState = { ...gameState, selectedQuestPlayers: playerChoices };
-        client.broadcast.emit('playerChoices', { selectedQuestPlayers: gameState.selectedQuestPlayers });
+        client.broadcast.emit('playerChoices', gameState.selectedQuestPlayers);
     });
 
     client.on('confirmPlayerChoices', msg => {
@@ -59,19 +58,24 @@ io.on('connection', (client) => {
     });
 
     client.on('voteChoice', choice => {
-        // loop over to find the client id that matches the playerName
+        // loop over to find the appropiate client
+        console.log('received vote from' + client.id);
         for (playerName in gameState.players) {
-            if (gameState.players[playerName].id === client.id) {
+            if (gameState.players[playerName].clientId === client.id) {
                 gameState.players[playerName].vote = choice;
                 gameState.approveRejectVotes.push(choice);
             }
         }
 
-        const playerCount = 1; // Object.keys(gameState.players).length;
+        const playerCount = Object.keys(gameState.players).length;
+        console.log(playerCount, gameState.approveRejectVotes);
         if (gameState.approveRejectVotes.length === playerCount) {
+            console.log('should show quest phase');
             let rejectVotes = gameState.approveRejectVotes.filter((vote) => vote === 'reject');
             if (rejectVotes.length < Math.ceil(playerCount / 2)) {
-                io.emit('showQuestPhase', true);
+                // TODO only emit to clients players selected
+                // io.emit('showQuestPhase', true);
+                emitShowQuestPhase();
             } else {
                 io.emit('failedTeamVote', undefined);
                 gameState.failedTeamVotes++;
@@ -91,6 +95,7 @@ io.on('connection', (client) => {
 
             } else {
                 questNumber = (questNumber + 1) % 5;
+                emitNumQuestParticipants(QUEST_INFO[5].quests[questNumber]);
             }
             endRound();
         }
@@ -108,6 +113,9 @@ io.listen(port);
 console.log('servering running...');
 
 
+const emitNumQuestParticipants = (num) => {
+    io.emit('numQuestParticipants', num);
+}
 
 const checkIfWinner = () => {
     if (gameState.failedTeamVotes === 5 || questPassFail.filter((quest) => quest === false).length === 3) {
@@ -154,7 +162,6 @@ const shuffle = (array) => {
 }
 
 const assignCharacters = (players) => {
-    console.log('assigning characters');
     const characters = shuffle(presetCharacters0);
     let characterIndex = 0;
     // assign a character to players
@@ -170,14 +177,12 @@ const assignCharacters = (players) => {
 }
 
 const postWhoClientSees = (client) => {
-    console.log(client);
     const playersInfo = [];
     const players = gameState.players;
     for (nameKey in players) {
         if (client.clientId === players[nameKey].clientId || WHO_CHARACTER_CAN_SEE[client.character].includes(players[nameKey].character)) {
             // handle the case of percival seeing morgana as merlin
             if (client.character === 'percival' && players[nameKey].character === 'morgana') {
-                console.log('morgana should appear as merlin');
                 playersInfo.push({ name: players[nameKey].name, cardImage: 'merlin' })
             } else {
                 playersInfo.push({ name: players[nameKey].name, cardImage: players[nameKey].character })
@@ -188,4 +193,16 @@ const postWhoClientSees = (client) => {
     }
     io.to(`${client.clientId}`).emit('gamePlayers', playersInfo);
     // client.emit('players', testPlayers);
+};
+
+const emitShowQuestPhase = () => {
+
+    const playersToEmitTo = gameState.selectedQuestPlayers;
+    console.log(playersToEmitTo);
+    for (player in gameState.players) {
+        console.log(player, playersToEmitTo.includes(player))
+        if (playersToEmitTo.includes(player)) {
+            io.to(`${gameState.players[player].clientId}`).emit('showQuestPhase', true);
+        }
+    }
 };
