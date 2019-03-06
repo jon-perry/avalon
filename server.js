@@ -30,7 +30,7 @@ let questNumber = 0;
 let numPlayersConnected = 0;
 io.on('connection', (client) => {
     // handles client disconnecting then reconnecting -- uses their name (which will be unique) to update them in the players object -- needs
-    client.on('login', info => {
+    client.on(CLIENT_ACTION.LOGIN, info => {
         const players = gameState.players;
         if (info.name.value in players) {
             players[info.name.value] = { ...players[info.name.value], clientId: client.id };
@@ -41,7 +41,7 @@ io.on('connection', (client) => {
             numPlayersConnected++;
         }
         // TODO change this to say true or false
-        client.emit('loggedIn', true);
+        client.emit(CLIENT_ACTION.LOGGED_IN, true);
         console.log(numPlayersConnected);
         if (numPlayersConnected % 5 === 0) {
             assignCharacters(gameState.players);
@@ -53,16 +53,16 @@ io.on('connection', (client) => {
         numPlayersConnected--;
     });
 
-    client.on('playerChoice', playerChoices => {
+    client.on(CLIENT_ACTION.PLAYER_SELECT, playerChoices => {
         gameState = { ...gameState, selectedQuestPlayers: playerChoices };
         client.broadcast.emit('playerChoices', gameState.selectedQuestPlayers);
     });
 
-    client.on('confirmPlayerChoices', msg => {
-        io.emit('showVotePhase', true);
+    client.on(CLIENT_ACTION.CONFIRM_SELECTED_PLAYERS, msg => {
+        io.emit('showVotePhase', msg);
     });
 
-    client.on('voteChoice', choice => {
+    client.on(CLIENT_ACTION.VOTE_CONFIRMATION, choice => {
         // loop over to find the appropiate client
         console.log('received vote from' + client.id);
         for (playerName in gameState.players) {
@@ -82,19 +82,19 @@ io.on('connection', (client) => {
                 // io.emit('showQuestPhase', true);
                 emitShowQuestPhase();
             } else {
-                io.emit('failedTeamVote', undefined);
+                io.emit(CLIENT_ACTION.FAILED_TEAM_VOTE, undefined);
                 gameState.failedTeamVotes++;
                 endRound();
             }
         }
     })
 
-    client.on('successFailConfirmed', (choice) => {
+    client.on(CLIENT_ACTION.SUCCESS_FAIL_CONFIRMED, (choice) => {
         let successFailVotes = gameState.successFailVotes
         successFailVotes.push(choice);
         if (successFailVotes.length === QUEST_INFO[5/*playerCount*/].quests[questNumber]) {
             const result = checkIfQuestPassFail(2, questNumber, gameState.successFailVotes);
-            io.emit('questResult', { questNumber: questNumber, result: result })
+            io.emit(CLIENT_ACTION.QUEST_RESULT, { questNumber: questNumber, result: result })
             questPassFail[questNumber] = result;
             if (gameState.gameVariant.questSelecting) {
 
@@ -104,10 +104,10 @@ io.on('connection', (client) => {
             }
             endRound();
         }
-        client.emit('showQuestPhase', false);
+        client.emit(CLIENT_ACTION.SHOW_QUEST_PHASE, false);
     });
 
-    io.emit('gameStarted', true);
+    io.emit(CLIENT_ACTION.GAME_STARTED, true);
 
 
 });
@@ -119,7 +119,7 @@ console.log('servering running...');
 
 
 const emitNumQuestParticipants = (num) => {
-    io.emit('numQuestParticipants', num);
+    io.emit(CLIENT_ACTION.NUM_QUEST_PARTICIPANTS, num);
 }
 
 const checkIfWinner = () => {
@@ -196,7 +196,7 @@ const emitWhoClientSees = (client) => {
             playersInfo.push({ name: players[nameKey].name, cardImage: 'loyalty-back' })
         }
     }
-    io.to(`${client.clientId}`).emit('gamePlayers', playersInfo);
+    io.to(`${client.clientId}`).emit(CLIENT_ACTION.GAME_PLAYERS, playersInfo);
     // client.emit('players', testPlayers);
 };
 
@@ -207,7 +207,7 @@ const emitShowQuestPhase = () => {
     for (player in gameState.players) {
         console.log(player, playersToEmitTo.includes(player))
         if (playersToEmitTo.includes(player)) {
-            io.to(`${gameState.players[player].clientId}`).emit('showQuestPhase', true);
+            io.to(`${gameState.players[player].clientId}`).emit(CLIENT_ACTION.SHOW_QUEST_PHASE, true);
         }
     }
 };

@@ -3,6 +3,7 @@ import Success from './Success'
 import Fail from './Fail'
 import './SuccessFail.scss';
 import { SocketContext } from "../../../App";
+const CLIENT_ACTION = require('../../../AppConstants');
 
 
 export default function ({ isOnQuest, isGood }) {
@@ -17,7 +18,7 @@ export default function ({ isOnQuest, isGood }) {
 
   const handleConfirm = () => {
     // let server know choice made and to update us to not being on quest
-    socket.emit('successFailConfirmed', decision);
+    socket.emit(CLIENT_ACTION.SUCCESS_FAIL_CONFIRMED, decision);
     setDecision(undefined);
   }
 

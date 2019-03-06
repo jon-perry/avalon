@@ -5,7 +5,7 @@ module.exports = {
         CONFIRM_SELECTED_PLAYERS: 'confirmSelectedPlayers',
         VOTE_CONFIRMATION: 'voteConfirmation',
         FAILED_TEAM_VOTE: 'failedTeamVote',
-        SUCCESS_FAIL_CONFIRMED: 'sucessFailConfirmed',
+        SUCCESS_FAIL_CONFIRMED: 'successFailConfirmed',
         QUEST_RESULT: 'questResult',
         SHOW_QUEST_PHASE: 'showQuestPhase',
         GAME_STARTED: 'gameStarted',

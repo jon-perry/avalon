@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { SocketContext } from '../App';
+const CLIENT_ACTION = require('../AppConstants');
 
 
 // could add some kind of persistence here to check if they've logged in previously. have to figure out how to do that
@@ -11,7 +12,7 @@ export default function (props) {
 
     const submit = (event) => {
         event.preventDefault();
-        socket.emit('login', { name: name });
+        socket.emit(CLIENT_ACTION.LOGIN, { name: name });
     }
 
 

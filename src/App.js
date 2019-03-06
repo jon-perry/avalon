@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import GameScreen from './GameScreen';
 import './App.css';
-import LoginScreen from './Login/LoginScreen'
+import LoginScreen from './Login/LoginScreen';
+const CLIENT_ACTION = require('./AppConstants');
 
 export const SocketContext = React.createContext(null);
 
@@ -16,7 +17,7 @@ function WaitingForPlayers(props) {
 
 export default function App(props) {
   const gameStarted = useGameStarted(true);
-  const loggedIn = useLoggedIn(true);
+  const loggedIn = useLoggedIn(false);
   const players = useServerGivenPlayers();
   const [playerCount, setPlayerCount] = useState(5);
   const [clientIsQuestLeader, setClientIsQuestLeader] = useState(true);
@@ -50,9 +51,9 @@ const useGameStarted = (initial) => {
 
   const handle = msg => setGameStarted(msg);
   useEffect(() => {
-    socket.on('gameStarted', handle);
+    socket.on(CLIENT_ACTION.GAME_STARTED, handle);
 
-    return () => socket.removeListener('gameStarted', handle);
+    return () => socket.removeListener(CLIENT_ACTION.GAME_STARTED, handle);
   });
 
   return gameStarted;
@@ -64,9 +65,9 @@ const useLoggedIn = (initial) => {
 
   useEffect(() => {
     const handle = msg => setLoggedIn(msg);
-    socket.on('loggedIn', handle);
+    socket.on(CLIENT_ACTION.LOGGED_IN, handle);
 
-    return () => socket.removeEventListener('loggedIn', handle);
+    return () => socket.removeEventListener(CLIENT_ACTION.LOGGED_IN, handle);
   });
 
   return loggedIn;
@@ -87,9 +88,9 @@ const useServerGivenPlayers = (initial) => {
       setPlayers(tmpPlayers);
     };
 
-    socket.on('gamePlayers', handle);
+    socket.on(CLIENT_ACTION.GAME_PLAYERS, handle);
 
-    return () => socket.removeListener('gamePlayers', handle);
+    return () => socket.removeListener(CLIENT_ACTION.GAME_PLAYERS, handle);
   });
 
   return players;

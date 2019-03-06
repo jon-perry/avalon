@@ -3,6 +3,7 @@ import Approve from '../../Tokens/Approve';
 import Reject from '../../Tokens/Reject';
 import './ApproveReject.scss';
 import { SocketContext } from '../../../App'
+const CLIENT_ACTION = require('../../../AppConstants');
 
 
 export default function ApproveReject({ setShowVotePhase }) {
@@ -14,8 +15,7 @@ export default function ApproveReject({ setShowVotePhase }) {
     }
 
     const handleConfirm = () => {
-        socket.emit('voteChoice', voteChoice);
-        // setVoteChoice(undefined);
+        socket.emit(CLIENT_ACTION.VOTE_CONFIRMATION, voteChoice);
         setShowVotePhase(false);
     };
 

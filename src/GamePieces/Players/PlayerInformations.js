@@ -3,6 +3,7 @@ import Player from './Player';
 import './PlayerInformations.scss';
 import ApproveReject from '../GameBoard/Votes/ApproveReject';
 import { SocketContext } from '../../App';
+const CLIENT_ACTION = require('../../AppConstants');
 
 export default function PlayerInformation({ players, active, numQuestParticipants }) {
     const socket = useContext(SocketContext);
@@ -37,8 +38,8 @@ const useCustomState = (socket) => {
 
     useEffect(() => {
         const handlePlayerChoices = (msg) => setSelectedPlayers(msg);
-        socket.on('playerChoices', handlePlayerChoices);
-        return () => socket.removeListener('playerChoices', handlePlayerChoices);
+        socket.on(CLIENT_ACTION.PLAYER_SELECT, handlePlayerChoices);
+        return () => socket.removeListener(CLIENT_ACTION.CONFIRM_SELECTED_PLAYERS, handlePlayerChoices);
     }, []);
 
     useEffect(() => {
@@ -60,12 +61,12 @@ const useCustomState = (socket) => {
             nextState = nextState.filter((currentName) => currentName !== name);
             setSelectedPlayers(nextState);
         }
-        socket.emit('playerChoice', nextState);
+        socket.emit(CLIENT_ACTION.PLAYER_SELECT, nextState);
     }
 
     const handleConfirmClick = () => {
         setSelectedPlayers([]);
-        socket.emit('confirmPlayerChoices', undefined);
+        socket.emit(CLIENT_ACTION.CONFIRM_SELECTED_PLAYERS, true);
     }
 
     return [selectedPlayers, showVotePhase, setShowVotePhase, handlePlayerClick, handleConfirmClick];

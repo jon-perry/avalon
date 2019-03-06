@@ -4,6 +4,7 @@ import './GameScreen.scss';
 import PlayerInformations from './GamePieces/Players/PlayerInformations';
 import SuccessFail from './GamePieces/GameBoard/Votes/SuccessFail';
 import { SocketContext } from './App';
+const CLIENT_ACTION = require('./AppConstants');
 
 const defaultQuestPassFail = [undefined, undefined, undefined, undefined, undefined];
 const createCharacter = (name) => require(`./pictures/characters/${name}.jpg`);
@@ -31,9 +32,9 @@ export default function GameScreen({ players, playerCount, clientIsQuestLeader }
             setIsOnQuest(msg);
         };
 
-        socket.on('showQuestPhase', handle);
+        socket.on(CLIENT_ACTION.SHOW_QUEST_PHASE, handle);
 
-        return () => socket.removeListener('showQuestPhase', handle);
+        return () => socket.removeListener(CLIENT_ACTION.SHOW_QUEST_PHASE, handle);
     }, [])
 
     useEffect(() => {
@@ -45,8 +46,8 @@ export default function GameScreen({ players, playerCount, clientIsQuestLeader }
             setQuestPassFail(newState);
         };
 
-        socket.on('questResult', handle);
-        return () => socket.removeListener('questResult', handle);
+        socket.on(CLIENT_ACTION.QUEST_RESULT, handle);
+        return () => socket.removeListener(CLIENT_ACTION.QUEST_RESULT, handle);
     }, [questPassFail])
 
     return (

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import './Votes.scss';
 import { SocketContext } from '../../../App';
+const CLIENT_ACTION = require('../../../AppConstants');
 
 const voteMarker = require("../../../pictures/tokens/vote-marker.png");
 
@@ -38,8 +39,8 @@ const useVoteIndex = (socket) => {
         const handle = msg => {
             setVoteIndex(voteIndex + 1)
         };
-        socket.on('failedTeamVote', handle);
-        return () => socket.removeListener('failedTeamVote', handle);
+        socket.on(CLIENT_ACTION.FAILED_TEAM_VOTE, handle);
+        return () => socket.removeListener(CLIENT_ACTION.FAILED_TEAM_VOTE, handle);
     }, [voteIndex])
 
     return voteIndex;
