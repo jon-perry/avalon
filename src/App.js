@@ -16,7 +16,7 @@ function WaitingForPlayers(props) {
 
 export default function App(props) {
   const gameStarted = useGameStarted(true);
-  const loggedIn = useLoggedIn(false);
+  const loggedIn = useLoggedIn(true);
   const players = useServerGivenPlayers();
   const [playerCount, setPlayerCount] = useState(5);
   const [clientIsQuestLeader, setClientIsQuestLeader] = useState(true);

@@ -2,6 +2,7 @@ const QUEST_INFO = require('./src/GamePieces/GameBoard/Quests/QuestInfo');
 const WHO_CHARACTER_CAN_SEE = require('./src/GamePieces/Characters/WhoCharacterCanSee');
 const CHARACTER_GAME_VARIANTS = require('./src/GamePieces/Characters/GameVariants');
 const io = require('socket.io')();
+const CLIENT_ACTION = require('./src/AppConstants');
 let ids = [];
 // need to set up to have playersInformation in players to keep track of who voted for what as well as their character
 
@@ -16,6 +17,10 @@ let gameState = {
     successFailVotes: [],
     failedTeamVotes: 0,
 };
+
+let fs = require('fs');
+const data = JSON.parse(fs.readFileSync('src/GamePieces/Characters/CharacterGameVariants.json'));
+console.log(CLIENT_ACTION.LOGIN);
 
 
 const questPassFail = [undefined, undefined, undefined, undefined, undefined];
@@ -171,12 +176,12 @@ const assignCharacters = (players) => {
 
     // tell each client who they can and cannot see
     for (nameKey in players) {
-        postWhoClientSees(players[nameKey]);
+        emitWhoClientSees(players[nameKey]);
     }
 
 }
 
-const postWhoClientSees = (client) => {
+const emitWhoClientSees = (client) => {
     const playersInfo = [];
     const players = gameState.players;
     for (nameKey in players) {
