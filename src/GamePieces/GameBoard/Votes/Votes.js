@@ -36,11 +36,11 @@ const useVoteIndex = (socket) => {
     const [voteIndex, setVoteIndex] = useState(-1);
 
     useEffect(() => {
-        const handle = msg => {
-            setVoteIndex(voteIndex + 1)
+        const failedTeamVoteHandle = msg => {
+            setVoteIndex(msg)
         };
-        socket.on(CLIENT_ACTION.FAILED_TEAM_VOTE, handle);
-        return () => socket.removeListener(CLIENT_ACTION.FAILED_TEAM_VOTE, handle);
+        socket.on(CLIENT_ACTION.FAILED_TEAM_VOTE, failedTeamVoteHandle);
+        return () => socket.removeListener(CLIENT_ACTION.FAILED_TEAM_VOTE, failedTeamVoteHandle);
     }, [voteIndex])
 
     return voteIndex;

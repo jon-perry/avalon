@@ -1,34 +1,88 @@
 module.exports = class Game {
-    defaultGameVariant = { ladyInTheWater: false, questSelecting: false, characters: presetCharacters0 }
 
-    constructor(players, characters, gameVariant) {
-        this.players = players;
+    constructor(players, characters) {
+        this.players = players ? players : [];
         this.characters = characters;
         this.selectedQuestPlayers = [];
         this.approveRejectVotes = [];
         this.successFailVotes = [];
-        this.failedTeamVotes = [];
+        this.failedTeamVotes = 0;
         this.history = [];
+        this.questPassFailResults = [undefined, undefined, undefined, undefined, undefined];
+        this.questNumber = 0;
 
-        if (gameVariant) {
-            this.gameVariant = gameVariant;
-        } else {
-            this.gameVariant = defaultGameVariant;
-        }
+        // TODO once working with normal game variant, allow new game variants if time permits
+        // if (gameVariant) {
+        //     this.gameVariant = gameVariant;
+        // } else {
+        //     this.gameVariant = { ladyInTheWater: false, questSelecting: false, characters: presetCharacters0 }; // default game variant
+        // }
 
     }
     getPlayers() {
         return this.players;
     }
 
-    updatePlayer(player) {
-        for (let i = 0; i < this.players.length; i++) {
-            if (this.players[i].name === player.name) {
-                this.players[i] = player;
-                return true;
-            }
-        }
-        return false;
+    addPlayer(player) {
+        this.players.push(player);
+    }
+
+    setPlayers(players) {
+        this.players = players;
+    }
+
+    getCharacters() {
+        return this.characters;
+    }
+
+    getSelectedQuestPlayers() {
+        return this.selectedQuestPlayers;
+    }
+
+    setSelectedQuestPlayers(questPlayers) {
+        this.selectedQuestPlayers = questPlayers;
+    }
+
+    getApproveRejectVotes() {
+        return this.approveRejectVotes;
+    }
+
+    addApproveRejectVote(vote) {
+        this.approveRejectVotes.push(vote);
+    }
+
+    getFailedTeamVotes() {
+        return this.failedTeamVotes;
+    }
+
+    incrementFailedTeamVotes() {
+        this.failedTeamVotes++;
+    }
+
+    getSuccessFailVotes() {
+        return this.successFailVotes;
+    }
+
+    addSuccessFailVote(vote) {
+        this.successFailVotes.push(vote);
+    }
+
+    getQuestNumber() {
+        return this.questNumber;
+    }
+
+    incrementQuestNumber() {
+        this.questNumber++;
+    }
+
+    setQuestNumber(selectedQuestNum) {
+        this.questNumber = selectedQuestNum;
+    }
+
+    determineQuestResult() {
+        const requiredFailVotes = (this.players.length > 6 && this.questNumber === 3) ? 2 : 1;
+        const failedVotes = this.successFailVotes.filter((vote) => vote === 'fail');
+        return failedVotes.length < requiredFailVotes;
     }
 
     getHistory() {
@@ -39,7 +93,16 @@ module.exports = class Game {
         this.history.push(info);
     }
 
-    
+    getQuestPassFailResults() {
+        return this.questPassFailResults;
+    }
+
+    setQuestPassFailResults(results) {
+        this.questPassFailResults = results;
+    }
+
+
+
 
 
 
