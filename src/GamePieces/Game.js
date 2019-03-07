@@ -11,7 +11,7 @@ module.exports = class Game {
         this.questPassFailResults = [undefined, undefined, undefined, undefined, undefined];
         this.questNumber = 0;
 
-        // TODO once working with normal game variant, allow new game variants if time permits
+        // TODO once working with normal game variant, allow new game variants if time permits -- most people do not use lady in the water/quest selecting
         // if (gameVariant) {
         //     this.gameVariant = gameVariant;
         // } else {
@@ -88,9 +88,33 @@ module.exports = class Game {
     getHistory() {
         return this.history;
     }
+    endRound() {
+        this.appendHistory();
+        this.approveRejectVotes = [];
+        this.selectedQuestPlayers = [];
+        this.successFailVotes = [];
+        return this.checkIfWinner();
+    }
 
-    appendHistory(info) {
-        this.history.push(info);
+    appendHistory() {
+        this.history.push({
+            players: this.players,
+            selectedQuestPlayers: this.selectedQuestPlayers,
+            approveRejectVotes: this.approveRejectVotes,
+            succsesFailVotes: this.successFailVotes,
+            failedTeamVotes: this.failedTeamVotes,
+            questPassFailResults: this.questPassFailResults,
+            questNumber: this.questNumber,
+        });
+    }
+
+    // TODO account for if there is an assassin and good wins, assassin has a chance to kill merlin to win game
+    checkIfWinner() {
+        if (this.failedTeamVotes === 5 || this.questPassFailResults.filter((quest) => quest === false).length === 3) {
+            return 'Evil';
+        } else if (this.questPassFailResults.filter(quest => quest === true).length === 3) {
+            return 'Good'
+        }
     }
 
     getQuestPassFailResults() {

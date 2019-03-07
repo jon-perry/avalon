@@ -40,7 +40,7 @@ const useCustomState = (socket) => {
         const handlePlayerChoices = (msg) => setSelectedPlayers(msg);
         socket.on(CLIENT_ACTION.PLAYER_SELECT, handlePlayerChoices);
         return () => socket.removeListener(CLIENT_ACTION.CONFIRM_SELECTED_PLAYERS, handlePlayerChoices);
-    }, []);
+    }, [selectedPlayers]);
 
     useEffect(() => {
         const handleConfirm = (msg) => {

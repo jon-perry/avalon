@@ -39,6 +39,7 @@ export default function GameScreen({ players, playerCount, clientIsQuestLeader }
 
     useEffect(() => {
         const handle = msg => {
+            console.log('received quest result');
             const questNumber = msg.questNumber;
             const result = msg.result;
             const newState = questPassFail.slice();
