@@ -39,7 +39,6 @@ export default function GameScreen({ players, playerCount, clientIsQuestLeader }
 
     useEffect(() => {
         const handle = msg => {
-            console.log('received quest result');
             const questNumber = msg.questNumber;
             const result = msg.result;
             const newState = questPassFail.slice();
@@ -74,11 +73,13 @@ const useQuestLeader = () => {
 const useNumQuestParticipants = (socket) => {
     const [numQuestParticipants, setNumQuestParticipants] = useState();
 
-    const handleMsg = num => setNumQuestParticipants(num);
+    const handleMsg = num => {
+        setNumQuestParticipants(num);
+    }
     useEffect(() => {
-        socket.on('numQuestParticipants', handleMsg);
-        return () => socket.removeListener('numQuestParticipants', handleMsg);
-    });
+        socket.on(CLIENT_ACTION.NUM_QUEST_PARTICIPANTS, handleMsg);
+        return () => socket.removeListener(CLIENT_ACTION.NUM_QUEST_PARTICIPANTS, handleMsg);
+    }, [numQuestParticipants]);
     
     return numQuestParticipants;
 };

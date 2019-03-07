@@ -14,9 +14,8 @@ function WaitingForPlayers(props) {
     <div>Waiting for all players to connect</div>
   );
 };
-
 export default function App(props) {
-  const gameStarted = useGameStarted(true);
+  const gameStarted = useGameStarted(false);
   const loggedIn = useLoggedIn(false);
   const players = useServerGivenPlayers();
   const [playerCount, setPlayerCount] = useState(5);
@@ -34,10 +33,10 @@ export default function App(props) {
   return (
     <SocketContext.Provider value={socket}>
       <div className="App">
-        <button onClick={() => setClientIsQuestLeader(!clientIsQuestLeader)}>isQuestLeader</button>
-        <button onClick={() => incrementPlayerCount()}>Increase Player Count</button>
+        {/* <button onClick={() => setClientIsQuestLeader(!clientIsQuestLeader)}>isQuestLeader</button> */}
+        {/* <button onClick={() => incrementPlayerCount()}>Increase Player Count</button> */}
         {loggedIn ?
-          gameStarted ? <GameScreen players={players} playerCount={playerCount} clientIsQuestLeader={clientIsQuestLeader} setPlayerCount={setPlayerCount} /> : <WaitingForPlayers />
+          gameStarted ? <GameScreen players={players} playerCount={players.length} clientIsQuestLeader={clientIsQuestLeader} /> : <WaitingForPlayers />
           : <LoginScreen />}
       </div>
     </SocketContext.Provider>
@@ -49,11 +48,12 @@ export default function App(props) {
 const useGameStarted = (initial) => {
   const [gameStarted, setGameStarted] = useState(initial);
 
-  const handle = msg => setGameStarted(msg);
-  useEffect(() => {
-    socket.on(CLIENT_ACTION.GAME_STARTED, handle);
+  const gameStartedHandle = msg => setGameStarted(msg);
 
-    return () => socket.removeListener(CLIENT_ACTION.GAME_STARTED, handle);
+  useEffect(() => {
+    socket.on(CLIENT_ACTION.GAME_STARTED, gameStartedHandle);
+
+    return () => socket.removeListener(CLIENT_ACTION.GAME_STARTED, gameStartedHandle);
   });
 
   return gameStarted;
@@ -84,7 +84,6 @@ const useServerGivenPlayers = (initial) => {
         return { playerName: player.name, cardImage: createCharacter(player.cardImage), vote: 'approve' };
       });
       //tmpPlayers.push({playerName: players[0].name, cardImage: createCharacter(players[0].character), vote: 'approve'})
-      console.log(tmpPlayers)
       setPlayers(tmpPlayers);
     };
 

@@ -40,17 +40,17 @@ const useCustomState = (socket) => {
         const handlePlayerChoices = (msg) => setSelectedPlayers(msg);
         socket.on(CLIENT_ACTION.PLAYER_SELECT, handlePlayerChoices);
         return () => socket.removeListener(CLIENT_ACTION.CONFIRM_SELECTED_PLAYERS, handlePlayerChoices);
-    }, [selectedPlayers]);
+    });
 
     useEffect(() => {
         const handleConfirm = (msg) => {
             setShowVotePhase(msg)
             setSelectedPlayers([]);
         };
-        socket.on('showVotePhase', handleConfirm);
+        socket.on(CLIENT_ACTION.SHOW_VOTE_PHASE, handleConfirm);
 
-        return () => socket.removeListener('showVotePhase', handleConfirm);
-    }, [])
+        return () => socket.removeListener(CLIENT_ACTION.SHOW_QUEST_PHASE, handleConfirm);
+    })
 
     const handlePlayerClick = (name) => {
         let nextState = selectedPlayers.slice();

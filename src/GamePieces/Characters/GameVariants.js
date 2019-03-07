@@ -6,5 +6,8 @@ module.exports = {
 
     ],
     6: [
-    ]
+    ],
+    7: [
+        ['assassin', 'merlin', 'mordred', 'loyal-servant-0', 'loyal-servant-1', 'percival', 'minion-of-mordred-0']
+    ],
 };

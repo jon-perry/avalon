@@ -3,6 +3,7 @@ module.exports = {
         LOGGED_IN: 'loggedIn',
         PLAYER_SELECT: 'playerSelect',
         CONFIRM_SELECTED_PLAYERS: 'confirmSelectedPlayers',
+        SHOW_VOTE_PHASE: 'showVotePhase',
         VOTE_CONFIRMATION: 'voteConfirmation',
         FAILED_TEAM_VOTE: 'failedTeamVote',
         SUCCESS_FAIL_CONFIRMED: 'successFailConfirmed',
