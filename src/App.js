@@ -19,22 +19,13 @@ export default function App(props) {
   const loggedIn = useLoggedIn(false);
   const players = useServerGivenPlayers();
   const [playerCount, setPlayerCount] = useState(5);
-  const [clientIsQuestLeader, setClientIsQuestLeader] = useState(true);
-
-  const incrementPlayerCount = () => {
-    /* makes it so the player count is 5-10 inclusive for testing */
-    setPlayerCount((((playerCount + 1) % 11) < 5 ? 5 : ((playerCount + 1) % 11)));
-  }
-
-
+  const clientIsQuestLeader= useClientIsQuestLeader();
 
 
 
   return (
     <SocketContext.Provider value={socket}>
       <div className="App">
-        {/* <button onClick={() => setClientIsQuestLeader(!clientIsQuestLeader)}>isQuestLeader</button> */}
-        {/* <button onClick={() => incrementPlayerCount()}>Increase Player Count</button> */}
         {loggedIn ?
           gameStarted ? <GameScreen players={players} playerCount={players.length} clientIsQuestLeader={clientIsQuestLeader} /> : <WaitingForPlayers />
           : <LoginScreen />}
@@ -94,3 +85,16 @@ const useServerGivenPlayers = (initial) => {
 
   return players;
 };
+
+const useClientIsQuestLeader = () => {
+  const [clientIsQuestLeader, setClientIsQuestLeader] = useState(false);
+
+  const handleClientIsQuestLeader = isQuestLeader => {console.log(isQuestLeader); setClientIsQuestLeader(isQuestLeader);}
+  useEffect(() => {
+    socket.on(CLIENT_ACTION.IS_QUEST_LEADER, handleClientIsQuestLeader);
+
+    return () => socket.removeListener(CLIENT_ACTION.IS_QUEST_LEADER, handleClientIsQuestLeader);
+  });
+
+  return clientIsQuestLeader
+}

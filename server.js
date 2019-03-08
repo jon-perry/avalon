@@ -7,7 +7,7 @@ const GAME = require('./src/GamePieces/Game');
 let ids = [];
 // need to set up to have playersInformation in players to keep track of who voted for what as well as their character
 
-const PLAYER_COUNT = 7;
+const PLAYER_COUNT = 5;
 
 let PRESET_CHARACTERS = CHARACTER_GAME_VARIANTS[PLAYER_COUNT][0];
 const defaultGameVariant = { ladyInTheWater: false, questSelecting: false, characters: PRESET_CHARACTERS }
@@ -18,6 +18,7 @@ let numPlayersConnected = 0;
 io.on('connection', (client) => {
     // handles client disconnecting then reconnecting -- uses their name (which will be unique) to update them in the players object -- needs
     console.log(numPlayersConnected);
+    
     client.on(CLIENT_ACTION.LOGIN, info => {
         const existIndex = game.getPlayers().findIndex((player) => player.name === info.name.value);
         if (existIndex !== -1) {
@@ -33,13 +34,13 @@ io.on('connection', (client) => {
         client.emit(CLIENT_ACTION.LOGGED_IN, true);
         if (numPlayersConnected % PLAYER_COUNT === 0) {
             assignCharacters();
-            game.setQuestNumber(3);
+            // game.setQuestNumber(3);
             io.emit(CLIENT_ACTION.GAME_STARTED, true);
-            console.log(QUEST_INFO[PLAYER_COUNT].quests[3]);
             // need this because I don't think the component renders before the message is emitted
-            setTimeout(() => emitNumQuestParticipants(QUEST_INFO[PLAYER_COUNT].quests[3]), 1000);
+            setTimeout(() => emitInitialQuestLeader(), 1000);
+            setTimeout(() => emitNumQuestParticipants(QUEST_INFO[PLAYER_COUNT].quests[game.getQuestNumber()]), 1000);
             // emitNumQuestParticipants(QUEST_INFO[PLAYER_COUNT].quests[3]);
-            
+
         }
     });
 
@@ -69,15 +70,17 @@ io.on('connection', (client) => {
         game.addApproveRejectVote(vote);
         game.setPlayers(players);
 
-
         if (game.getApproveRejectVotes().length === players.length) {
             const rejectVotes = game.getApproveRejectVotes().filter((vote) => vote === 'reject');
             if (rejectVotes.length < Math.ceil(players.length / 2)) {
                 emitShowQuestPhase();
+                // emitNewQuestLeader();
             } else {
-                io.emit(CLIENT_ACTION.FAILED_TEAM_VOTE, game.getFailedTeamVotes());
-                game.incrementFailedTeamVotes();
-                game.endRound();
+                io.emit(CLIENT_ACTION.FAILED_TEAM_VOTE, game.getFailedTeamVotes().length);
+                console.log(game.getFailedTeamVotes());
+                game.markFailedTeamVote();
+                console.log(game.endRound());
+                emitNewQuestLeader();
             }
         }
     });
@@ -97,12 +100,12 @@ io.on('connection', (client) => {
             if (false/*game.gameVariant.questSelecting*/) {
 
             } else {
-                game.endRound();
                 game.incrementQuestNumber();
                 //TODO emit numquest participants
                 emitNumQuestParticipants(QUEST_INFO[game.getPlayers().length].quests[game.getQuestNumber()]);
             }
-            game.endRound();
+            console.log(game.endRound());
+            emitNewQuestLeader();
         }
     });
 });
@@ -180,5 +183,21 @@ const emitShowQuestPhase = () => {
         if (playersToEmitTo.includes(player.name)) {
             io.to(`${player.clientId}`).emit(CLIENT_ACTION.SHOW_QUEST_PHASE, true);
         }
+    });
+}
+
+const emitInitialQuestLeader = () => {
+    const initialQuestLeader = shuffle(game.getPlayers())[0];
+    game.getPlayers().forEach((player, index) => {
+        if (player.name === initialQuestLeader.name) {
+            game.setQuestLeader(player, index);
+        }
+        io.to(`${player.clientId}`).emit(CLIENT_ACTION.IS_QUEST_LEADER, initialQuestLeader.name === player.name);
+    });
+};
+
+const emitNewQuestLeader = () => {
+    game.getPlayers().forEach(player => {
+        io.to(`${player.clientId}`).emit(CLIENT_ACTION.IS_QUEST_LEADER, game.getQuestLeader().name === player.name);
     });
 }

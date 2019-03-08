@@ -6,10 +6,13 @@ module.exports = class Game {
         this.selectedQuestPlayers = [];
         this.approveRejectVotes = [];
         this.successFailVotes = [];
-        this.failedTeamVotes = 0;
+        this.failedTeamVotes = [];
         this.history = [];
         this.questPassFailResults = [undefined, undefined, undefined, undefined, undefined];
         this.questNumber = 0;
+        this.questLeader = undefined;
+        this.questLeaderIndex = undefined;
+        this.roundNumber = 0;
 
         // TODO once working with normal game variant, allow new game variants if time permits -- most people do not use lady in the water/quest selecting
         // if (gameVariant) {
@@ -19,6 +22,21 @@ module.exports = class Game {
         // }
 
     }
+
+    getQuestLeader() {
+        return this.questLeader;
+    }
+
+    setQuestLeader(player, index) {
+        this.questLeader = player;
+        this.questLeaderIndex = index;
+    }
+
+    incrementQuestLeader() {
+        this.questLeaderIndex = (this.questLeaderIndex + 1) % this.players.length;
+        this.questLeader = this.players[this.questLeaderIndex];
+    }
+
     getPlayers() {
         return this.players;
     }
@@ -55,8 +73,8 @@ module.exports = class Game {
         return this.failedTeamVotes;
     }
 
-    incrementFailedTeamVotes() {
-        this.failedTeamVotes++;
+    markFailedTeamVote() {
+        this.failedTeamVotes.push(this.roundNumber + 20);
     }
 
     getSuccessFailVotes() {
@@ -93,6 +111,8 @@ module.exports = class Game {
         this.approveRejectVotes = [];
         this.selectedQuestPlayers = [];
         this.successFailVotes = [];
+        this.incrementQuestLeader();
+        this.roundNumber++;
         return this.checkIfWinner();
     }
 
@@ -105,12 +125,13 @@ module.exports = class Game {
             failedTeamVotes: this.failedTeamVotes,
             questPassFailResults: this.questPassFailResults,
             questNumber: this.questNumber,
+            roundNumber: this.roundNumber,
         });
     }
 
     // TODO account for if there is an assassin and good wins, assassin has a chance to kill merlin to win game
     checkIfWinner() {
-        if (this.failedTeamVotes === 5 || this.questPassFailResults.filter((quest) => quest === false).length === 3) {
+        if (this.failedTeamVotes.length === 5 || this.questPassFailResults.filter((quest) => quest === false).length === 3) {
             return 'Evil';
         } else if (this.questPassFailResults.filter(quest => quest === true).length === 3) {
             return 'Good'
@@ -124,11 +145,6 @@ module.exports = class Game {
     setQuestPassFailResults(results) {
         this.questPassFailResults = results;
     }
-
-
-
-
-
 
 
 }

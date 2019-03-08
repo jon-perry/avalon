@@ -12,4 +12,5 @@ module.exports = {
         GAME_STARTED: 'gameStarted',
         NUM_QUEST_PARTICIPANTS: 'numQuestParticipants',
         GAME_PLAYERS: 'gamePlayers',
+        IS_QUEST_LEADER: 'isQuestLeader',
 }
