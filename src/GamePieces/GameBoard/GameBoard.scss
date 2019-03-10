@@ -1,0 +1,45 @@
+.game-board {
+    // width: 85%;
+    grid-area: game-board;
+    display: grid;
+    grid-template-areas: "vote-results vote-results"
+                         "quests quests"
+                         "votes details";
+    .vote-results {
+        grid-area: vote-results;
+        background-color: rgba(violet, 0.5);
+        display: inline-flex;
+        flex-direction: row;
+        justify-content: space-evenly;
+        height: 148px;
+        img {
+            width: 75px;
+            height: 100px;;
+        }
+    }
+
+    .details {
+        grid-area: details;
+        display: grid;
+        font-weight: bold;
+        color: white;
+        justify-items: center;
+        align-items: center;
+        background-color: rgba(0, 0, 0, 0.75);
+
+        #player-count {
+            color: white;
+        }
+        #mininons-of-mordred {
+            color: rgba(75, 12, 12, 0.842);
+        }
+        
+        + button {
+            background-color: rgba(75, 12, 12, 0.842);
+            border: 1px dashed green;
+            width: 50px;
+            height: 50px;
+        }
+    }
+    
+}

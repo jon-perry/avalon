@@ -1,0 +1,63 @@
+.quests {
+    display: flex;
+    grid-area: quests;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.25);
+
+    .quest-title {
+        position: relative;
+        bottom: 3rem;        
+        font-weight: bold;
+        color: rgb(255, 255, 255);
+
+    }
+    .quest-markers {
+        display: inline-grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+        grid-column-gap: 4.5rem;
+
+        .quest-marker {
+            position: relative;
+
+            img {
+                width: 120px;
+            }
+         // todo make this look right
+         .two-fail-quest {
+            position: absolute;
+            bottom: 8rem;
+            color: white;
+            font-weight: bold;
+        }
+
+         .empty-quest-marker {
+            display: inline-grid;
+            grid-template-rows: 1fr 3fr;
+            flex-direction: row;
+            align-items: baseline;
+            justify-content: center;
+            border-radius: 50%;
+            height: 120px;
+            width: 120px;
+            background-color: rgba(rgb(70, 67, 67), 0.6);
+            box-shadow: 2px 2px 10px 2px rgba(0, 0, 0, 0.8);
+            text-shadow: 3px 4px 6px black, 0 0 0 white, 1px 4px 6px black;
+            color: white;
+            .quest-number {
+                font-weight: bold;
+            }
+            .quest-player-requirement {
+                font-weight: bold;
+                font-size: 3rem;
+            }
+        }
+       
+    }
+
+
+
+        
+    }
+}
