@@ -77,7 +77,6 @@ io.on('connection', (client) => {
                 // emitNewQuestLeader();
             } else {
                 io.emit(CLIENT_ACTION.FAILED_TEAM_VOTE, game.getFailedTeamVotes().length);
-                console.log(game.getFailedTeamVotes());
                 game.markFailedTeamVote();
                 console.log(game.endRound());
                 emitNewQuestLeader();
@@ -117,7 +116,6 @@ console.log('server running...');
 
 
 const emitNumQuestParticipants = num => {
-    console.log('sending client info');
     io.emit(CLIENT_ACTION.NUM_QUEST_PARTICIPANTS, num);
 };
 

@@ -7,41 +7,43 @@ const CLIENT_ACTION = require('../AppConstants');
 // this is bare bones for now
 export default function (props) {
     const socket = useContext(SocketContext);
-    const name = useFormInput('Type your name here');
-    const email = useFormInput('Type your email here')
+    const [username, usernameInputProps] = useTextInput('username');
+    const [email, emailInputProps] = useTextInput('email')
+
+    console.log({ username, email });
 
     const submit = (event) => {
         event.preventDefault();
-        socket.emit(CLIENT_ACTION.LOGIN, { name: name });
+        console.log({ username, email });
+        socket.emit(CLIENT_ACTION.LOGIN, { username, email });
     }
 
-
     return (
-        <div>
-            <div>
-                <form onSubmit={submit}>
-                    <input {...name} />
-                </form>
-            </div>
-            <div>
-                <form label="hello" onSubmit={submit}>
-                    <input {...email} />
-                </form>
-            </div>
+        <div classusername="login">
+            <h1>Login</h1>
+            <form id="login-form" onSubmit={submit}>
+                <input {...usernameInputProps} />
+                <input {...emailInputProps} />
+                <button type="submit">Submit</button>
+            </form>
         </div>
     )
 }
 
-
 // taken from the intro to react hooks video ... pretty basic but cool
-function useFormInput(initial) {
-    const [value, setValue] = useState(initial);
+function useTextInput(placeholder) {
+    const [value, setValue] = useState('');
 
-    const handleChange = (event) => {
+    const onChange = (event) => {
         setValue(event.target.value);
     };
 
-    const focus = event => value === initial ? setValue('') : undefined;
-
-    return { value, onChange: handleChange, onFocus: focus };
+    return [
+        value,
+        {
+            [placeholder]: value,
+            onChange,
+            placeholder
+        }
+    ];
 }

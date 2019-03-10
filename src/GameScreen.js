@@ -53,13 +53,16 @@ export default function GameScreen({ players, playerCount, clientIsQuestLeader }
     return (
         <div className="game-screen">
             <SuccessFail isOnQuest={isOnQuest} isGood={false} />
-            {players && <PlayerInformations players={players} active={clientIsQuestLeader} numQuestParticipants={numQuestParticipants} />}
-            {/* <Test /> */}
-            <GameBoard
-                players={players}
-                playerCount={playerCount}
-                questPassFail={questPassFail}
-            />
+            {players && (
+                <>
+                    <PlayerInformations players={players} active={clientIsQuestLeader} numQuestParticipants={numQuestParticipants} />
+                    <GameBoard
+                        players={players}
+                        playerCount={playerCount}
+                        questPassFail={questPassFail}
+                    />
+                </>
+            )}
         </div>
     )
 }
@@ -80,6 +83,6 @@ const useNumQuestParticipants = (socket) => {
         socket.on(CLIENT_ACTION.NUM_QUEST_PARTICIPANTS, handleMsg);
         return () => socket.removeListener(CLIENT_ACTION.NUM_QUEST_PARTICIPANTS, handleMsg);
     }, [numQuestParticipants]);
-    
+
     return numQuestParticipants;
 };

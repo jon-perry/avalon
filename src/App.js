@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import GameScreen from './GameScreen';
-import './App.css';
 import LoginScreen from './Login/LoginScreen';
+import './App.css';
 const CLIENT_ACTION = require('./AppConstants');
 
 export const SocketContext = React.createContext(null);
@@ -19,16 +19,14 @@ export default function App(props) {
   const loggedIn = useLoggedIn(false);
   const players = useServerGivenPlayers();
   const [playerCount, setPlayerCount] = useState(5);
-  const clientIsQuestLeader= useClientIsQuestLeader();
-
-
+  const clientIsQuestLeader = useClientIsQuestLeader();
 
   return (
     <SocketContext.Provider value={socket}>
       <div className="App">
-        {loggedIn ?
-          gameStarted ? <GameScreen players={players} playerCount={players.length} clientIsQuestLeader={clientIsQuestLeader} /> : <WaitingForPlayers />
-          : <LoginScreen />}
+        <GameScreen players={players} clientIsQuestLeader={clientIsQuestLeader} />
+        <LoginScreen />
+        {/* <WaitingForPlayers /> */}
       </div>
     </SocketContext.Provider>
   );
@@ -89,7 +87,7 @@ const useServerGivenPlayers = (initial) => {
 const useClientIsQuestLeader = () => {
   const [clientIsQuestLeader, setClientIsQuestLeader] = useState(false);
 
-  const handleClientIsQuestLeader = isQuestLeader => {console.log(isQuestLeader); setClientIsQuestLeader(isQuestLeader);}
+  const handleClientIsQuestLeader = isQuestLeader => { console.log(isQuestLeader); setClientIsQuestLeader(isQuestLeader); }
   useEffect(() => {
     socket.on(CLIENT_ACTION.IS_QUEST_LEADER, handleClientIsQuestLeader);
 
