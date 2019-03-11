@@ -9,19 +9,20 @@ class Quests extends Component {
         console.log(event.target);
     }
     render() {
-        const { questPassFail, playerCount } = this.props;
+        const { quests, playerCount } = this.props;
         console.log({playerCount});
         return (
             <div className="quests">
                 <div className="quest-title">QUESTS</div>
                 <div className="quest-markers">
                     {
-                        [0, 1, 2, 3, 4].map((questIndex) => (
+                       quests.map((quest, index) => (
                             <QuestMarker
-                                key={questIndex}
-                                questIndex={questIndex}
-                                questPassed={questPassFail[questIndex]}
-                                gameQuestInfo={gameQuestInfo[playerCount]}
+                                key={index}
+                                questIndex={index}
+                                questPassed={quest.passFailed}
+                                numberOfParticipants={quest.numberOfParticipants}
+                                twoFailRequired={quest.twoFailRequired}
                             />
                         ))
                     }

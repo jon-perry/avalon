@@ -6,7 +6,7 @@ class Quest {
         this.participants = [];
         this.approveRejectVotes = [];
         this.successFailVotes = [];
-        this.numberQuestParticipants = questParticipants;
+        this.numberOfParticipants = questParticipants;
         this.failsRequired = failsRequired;
     }
 }

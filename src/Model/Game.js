@@ -45,7 +45,7 @@ class Game {
     getQuestInfo() {
         const questInfos = QUEST_INFO[this.players.length];
         const quests = questInfos.quests.map((questInfo, index) => {
-            return new Quest(questInfo, this.players.length > 6 && index === 3);
+            return new Quest(questInfo, this.players.length > 6 && index === 3, index);
         });
         return quests;
     }

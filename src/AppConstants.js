@@ -17,6 +17,9 @@ module.exports = {
         GAME_START: 'gameStart',
         GET_GAME: 'getGame',
         SET_GAME: 'setGame',
+        PLAYER_SELECT: 'playerSelect',
+        CONFIRM_SELECTED_PLAYERS: 'confirmSelectedPlayers',
+        SET_GAME_PHASE: 'setGamePhase',
 
         /* Game Phases */
         GAME_PHASES: {

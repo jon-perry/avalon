@@ -12,7 +12,7 @@ export default function GameScreen({ game }) {
     const socket = useContext(SocketContext);
     const [isOnQuest, setIsOnQuest] = useState(false);
     const [questPassFail, setQuestPassFail] = useState(defaultQuestPassFail);
-
+    const gamePhase = useGamePhase(socket);
     useEffect(() => {
         const handle = msg => {
             setIsOnQuest(msg);
@@ -38,17 +38,35 @@ export default function GameScreen({ game }) {
 
     return (
         <div className="game-screen">
-            <SuccessFail isOnQuest={isOnQuest} isGood={false} />
+            <SuccessFail isOnQuest={gamePhase === CLIENT_ACTION.GAME_PHASES.QUEST} isGood={false} />
             {game.players && (
                 <>
-                    <PlayerInformations players={game.players} active={true} numQuestParticipants={game.quests[game.questNumber]} />
+                    <PlayerInformations
+                        gamePhase={gamePhase}
+                        players={game.players}
+                        active={true}
+                        numQuestParticipants={game.quests[game.questNumber].numberOfParticipants}
+                    />
                     <GameBoard
                         players={game.players}
-                        playerCount={game.players.length}
-                        questPassFail={questPassFail}
+                        quests={game.quests}
                     />
                 </>
             )}
         </div>
     )
 }
+
+const useGamePhase = (socket) => {
+    const [gamePhase, setGamePhase] = useState();
+
+    const handleNewGamePhase = (phase) => {
+        setGamePhase(phase);
+    }
+    useEffect(() => {
+        socket.on(CLIENT_ACTION.SET_GAME_PHASE, handleNewGamePhase);
+        return () => socket.removeListener(CLIENT_ACTION.SET_GAME_PHASE, handleNewGamePhase);
+    }, [gamePhase]);
+
+    return gamePhase;
+};

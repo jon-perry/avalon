@@ -82,7 +82,25 @@ io.on('connection', (client) => {
         if (game) {
             client.emit(CLIENT_ACTION.SET_GAME, game.asSeenBy(playerId));
         }
-    })
+    });
+
+    client.on(CLIENT_ACTION.PLAYER_SELECT, ({ playerId, nextState }) => {
+        const game = findGame(playerId);
+        if (game) {
+            game.selectedPlayers = nextState;
+            client.broadcast.emit(CLIENT_ACTION.PLAYER_SELECT, { nextState });
+
+        }
+    });
+
+    client.on(CLIENT_ACTION.CONFIRM_SELECTED_PLAYERS, ({ playerId, selectedPlayers }) => {
+        const game = findGame(playerId);
+        if (game) {
+            game.selectedPlayers = selectedPlayers;
+            game.phase = CLIENT_ACTION.GAME_PHASES.QUEST_PLAYER_APPROVAL;
+            io.emit(CLIENT_ACTION.SET_GAME_PHASE, CLIENT_ACTION.GAME_PHASES.QUEST_PLAYER_APPROVAL);
+        }
+    });
 
 });
 

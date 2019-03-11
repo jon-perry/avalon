@@ -49,9 +49,8 @@ const useLoggedIn = () => {
 
     return () => socket.removeListener(CLIENT_ACTION.LOGGED_IN, handleLoggedIn);
   }, [loggedIn]);
-
+  
   return loggedIn;
-
 }
 
 const useGame = () => {

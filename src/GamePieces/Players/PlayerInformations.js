@@ -8,7 +8,6 @@ const APP_CONSTANTS = require('../../AppConstants');
 export default function PlayerInformation({ gamePhase, players, active, numQuestParticipants }) {
     const socket = useContext(SocketContext);
     const [selectedPlayers, handlePlayerClick, handleConfirmClick] = useSelectedPlayers(socket);
-
     return (
         gamePhase === APP_CONSTANTS.GAME_PHASES.QUEST_PLAYER_APPROVAL ?
             (<ApproveReject />) :
@@ -17,12 +16,13 @@ export default function PlayerInformation({ gamePhase, players, active, numQuest
                     <Player
                         key={player.id}
                         {...player}
-                        onClick={active ? () => handlePlayerClick(player.name) : undefined}
-                        selected={selectedPlayers.includes(player.name)}
+                        onClick={active ? () => handlePlayerClick(player.name, player.id) : undefined}
+                        selected={selectedPlayers.some((playerName) => player.name === playerName)}
                     />
                 ))}
                 {selectedPlayers.length === numQuestParticipants && active &&
-                    (<button onClick={handleConfirmClick} className="confirm-quest-players">Confirm</button>)}
+                    /* TODO: Fix this possibly */
+                    (<button onClick={() => handleConfirmClick(players[0].id)} className="confirm-quest-players">Confirm</button>)}
             </div>)
     );
 }
@@ -33,25 +33,27 @@ const useSelectedPlayers = (socket) => {
 
     /* Sync Selected Players */
     useEffect(() => {
-        const handlePlayerChoices = (selectedPlayersResponse) => setSelectedPlayers(selectedPlayersResponse);
+        const handlePlayerChoices = ({ nextState }) => {
+            setSelectedPlayers(nextState)
+        };
         socket.on(APP_CONSTANTS.PLAYER_SELECT, handlePlayerChoices);
-        return () => socket.removeListener(APP_CONSTANTS.CONFIRM_SELECTED_PLAYERS, handlePlayerChoices);
-    });
+        return () => socket.removeListener(APP_CONSTANTS.PLAYER_SELECT, handlePlayerChoices);
+    }, [selectedPlayers]);
 
-    const handlePlayerClick = (name) => {
+    const handlePlayerClick = (selectedPlayerName, playerId) => {
         let nextState = selectedPlayers.slice();
-        if (!selectedPlayers.includes(name)) {
-            nextState.push(name);
+        if (!selectedPlayers.some(name => name === selectedPlayerName)) {
+            nextState.push(selectedPlayerName);
             setSelectedPlayers(nextState);
         } else {
-            nextState = nextState.filter((currentName) => currentName !== name);
+            nextState = nextState.filter((currentPlayerName) => currentPlayerName !== selectedPlayerName);
             setSelectedPlayers(nextState);
         }
-        socket.emit(APP_CONSTANTS.PLAYER_SELECT, { selectedPlayers: nextState });
+        socket.emit(APP_CONSTANTS.PLAYER_SELECT, { nextState, playerId });
     }
 
-    const handleConfirmClick = () => {
-        socket.emit(APP_CONSTANTS.CONFIRM_SELECTED_PLAYERS, { selectedPlayers });
+    const handleConfirmClick = (playerId) => {
+        socket.emit(APP_CONSTANTS.CONFIRM_SELECTED_PLAYERS, { playerId, selectedPlayers });
     }
 
     return [selectedPlayers, handlePlayerClick, handleConfirmClick];
