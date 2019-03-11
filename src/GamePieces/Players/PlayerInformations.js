@@ -3,54 +3,40 @@ import Player from './Player';
 import './PlayerInformations.scss';
 import ApproveReject from '../GameBoard/Votes/ApproveReject';
 import { SocketContext } from '../../App';
-const CLIENT_ACTION = require('../../AppConstants');
+const APP_CONSTANTS = require('../../AppConstants');
 
-export default function PlayerInformation({ players, active, numQuestParticipants }) {
+export default function PlayerInformation({ gamePhase, players, active, numQuestParticipants }) {
     const socket = useContext(SocketContext);
-    const character = require('../../pictures/characters/loyalty-back.jpg');
-    const [selectedPlayers, showVotePhase, setShowVotePhase, handlePlayerClick, handleConfirmClick] = useCustomState(socket);
-
-
-    // If activePlayer -> Presentation must change to allow for clicking
+    const [selectedPlayers, handlePlayerClick, handleConfirmClick] = useSelectedPlayers(socket);
 
     return (
-        showVotePhase ? <ApproveReject setShowVotePhase={setShowVotePhase} /> :
-            <div className="player-informations" style={{ gridTemplateColumns: `repeat(${players.length}, 1fr)` }}>
-                {players.map((player, index) => (
+        gamePhase === APP_CONSTANTS.GAME_PHASES.QUEST_PLAYER_APPROVAL ?
+            (<ApproveReject />) :
+            (<div className="player-informations" style={{ gridTemplateColumns: `repeat(${players.length}, 1fr)` }}>
+                {players.map((player) => (
                     <Player
-                        key={index}
-                        playerName={player.playerName}
-                        cardImage={player.cardImage}
-                        onClick={active ? () => handlePlayerClick(player.playerName) : undefined}
-                        selected={selectedPlayers.includes(player.playerName)}
+                        key={player.id}
+                        {...player}
+                        onClick={active ? () => handlePlayerClick(player.name) : undefined}
+                        selected={selectedPlayers.includes(player.name)}
                     />
                 ))}
                 {selectedPlayers.length === numQuestParticipants && active &&
                     (<button onClick={handleConfirmClick} className="confirm-quest-players">Confirm</button>)}
-            </div>
+            </div>)
     );
 }
 
 
-const useCustomState = (socket) => {
+const useSelectedPlayers = (socket) => {
     const [selectedPlayers, setSelectedPlayers] = useState([]);
-    const [showVotePhase, setShowVotePhase] = useState(false);
 
+    /* Sync Selected Players */
     useEffect(() => {
-        const handlePlayerChoices = (msg) => setSelectedPlayers(msg);
-        socket.on(CLIENT_ACTION.PLAYER_SELECT, handlePlayerChoices);
-        return () => socket.removeListener(CLIENT_ACTION.CONFIRM_SELECTED_PLAYERS, handlePlayerChoices);
+        const handlePlayerChoices = (selectedPlayersResponse) => setSelectedPlayers(selectedPlayersResponse);
+        socket.on(APP_CONSTANTS.PLAYER_SELECT, handlePlayerChoices);
+        return () => socket.removeListener(APP_CONSTANTS.CONFIRM_SELECTED_PLAYERS, handlePlayerChoices);
     });
-
-    useEffect(() => {
-        const handleConfirm = (msg) => {
-            setShowVotePhase(msg)
-            setSelectedPlayers([]);
-        };
-        socket.on(CLIENT_ACTION.SHOW_VOTE_PHASE, handleConfirm);
-
-        return () => socket.removeListener(CLIENT_ACTION.SHOW_QUEST_PHASE, handleConfirm);
-    })
 
     const handlePlayerClick = (name) => {
         let nextState = selectedPlayers.slice();
@@ -61,13 +47,12 @@ const useCustomState = (socket) => {
             nextState = nextState.filter((currentName) => currentName !== name);
             setSelectedPlayers(nextState);
         }
-        socket.emit(CLIENT_ACTION.PLAYER_SELECT, nextState);
+        socket.emit(APP_CONSTANTS.PLAYER_SELECT, { selectedPlayers: nextState });
     }
 
     const handleConfirmClick = () => {
-        setSelectedPlayers([]);
-        socket.emit(CLIENT_ACTION.CONFIRM_SELECTED_PLAYERS, true);
+        socket.emit(APP_CONSTANTS.CONFIRM_SELECTED_PLAYERS, { selectedPlayers });
     }
 
-    return [selectedPlayers, showVotePhase, setShowVotePhase, handlePlayerClick, handleConfirmClick];
+    return [selectedPlayers, handlePlayerClick, handleConfirmClick];
 };

@@ -1,0 +1,53 @@
+import React, { useContext, useState } from 'react';
+import { SocketContext } from '../App';
+import CookieService from '../Util/CookieService';
+const CLIENT_ACTION = require('../AppConstants');
+
+export default function ({ id, players, leader }) {
+
+    const socket = useContext(SocketContext);
+    const [isChecked, setIsChecked] = useState(false);
+
+    const handleOnClick = () => {
+        socket.emit(CLIENT_ACTION.JOIN_LOBBY, { id });
+    };
+
+    const handleCheckChange = (event) => {
+        const isChecked = event.target.checked;
+        setIsChecked(isChecked);
+        socket.emit(CLIENT_ACTION.IS_READY_CHANGE, { id, ready: isChecked });
+    };
+
+    const activePlayer = CookieService.GetPlayer();
+    const activeLobby = players.some((lobbyPlayer) => activePlayer.id === lobbyPlayer.id);
+
+    const isLeader = activePlayer.id === (leader ? leader.id : undefined);
+
+    const handleGameStart = () => {
+        socket.emit(CLIENT_ACTION.GAME_START, { id });
+    };
+
+    return (
+        <div className="lobby">
+            <h2>Players</h2>
+            {
+                players.map((player) => {
+
+                    return (
+                        <div className="player" key={player.id}>
+                            <span className="player-name">{player.id === leader.id ? '♔ ' : ' '}{player.name}</span>
+                            {
+                                activePlayer.id === player.id ?
+                                    (<input type="checkbox" name="isReady" value={isChecked} onChange={handleCheckChange} />) :
+                                    (<span className="readiness">{player.ready ? '☑' : '☐'}</span>)
+                            }
+                        </div>)
+                })
+            }
+            <div className="lobby-controls">
+                {!activeLobby && (<button className="join-lobby" onClick={handleOnClick}>Join Lobby</button>)}
+                {isLeader && (<button onClick={() => handleGameStart()} disabled={!players.every((player) => player.ready)}>Start</button>)}
+            </div>
+        </div>
+    )
+}

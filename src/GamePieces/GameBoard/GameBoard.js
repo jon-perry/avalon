@@ -6,6 +6,8 @@ import VoteResults from './Votes/VoteResults';
 
 const Details = ({ playerCount, questLeader }) => {
     const combinations = {
+        1: ["1 Player", "Test Mode"],
+        2: ["2 Player", "Test Mode"],
         5: ["5 Players", "2 Minions of Morderd"],
         6: ["6 Players", "2 Minions of Morderd"],
         7: ["7 Players", "3 Minions of Mordred"],
@@ -13,8 +15,6 @@ const Details = ({ playerCount, questLeader }) => {
         9: ["9 Players", "3 Minions of Mordred"],
         10: ["10 Players", "4 Minions of Mordred"],
     }
-
-
 
     return (
         <div className="details">

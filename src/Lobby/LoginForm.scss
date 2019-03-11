@@ -1,0 +1,21 @@
+.login-form {
+    form {
+        display: inline-flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        input {
+            margin-bottom: 0.5rem;
+        }
+        input[type=text],
+        input[type=password] {
+            width: 100%;
+            box-sizing: border-box;
+        }
+    }
+    .login-controls {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-column-gap: 20px;
+    }
+}

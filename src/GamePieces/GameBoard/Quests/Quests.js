@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import QuestMarker from './QuestMarker';
 import './Quests.scss'
 
-
+const gameQuestInfo = require('./QuestInfo.json');
 
 class Quests extends Component {
     handleClick = (event) => {
@@ -10,6 +10,7 @@ class Quests extends Component {
     }
     render() {
         const { questPassFail, playerCount } = this.props;
+        console.log({playerCount});
         return (
             <div className="quests">
                 <div className="quest-title">QUESTS</div>
@@ -20,7 +21,7 @@ class Quests extends Component {
                                 key={questIndex}
                                 questIndex={questIndex}
                                 questPassed={questPassFail[questIndex]}
-                                playerCount={playerCount}
+                                gameQuestInfo={gameQuestInfo[playerCount]}
                             />
                         ))
                     }

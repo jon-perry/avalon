@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import GameScreen from './GameScreen';
-import LoginScreen from './Login/LoginScreen';
+import LobbyScreen from './Lobby/LobbyScreen';
+import LoginForm from './Lobby/LoginForm';
+import CookieService from './Util/CookieService';
 import './App.css';
 const CLIENT_ACTION = require('./AppConstants');
 
@@ -9,90 +11,68 @@ export const SocketContext = React.createContext(null);
 const io = require('socket.io-client');
 const socket = io.connect('localhost:8888');
 
-function WaitingForPlayers(props) {
-  return (
-    <div>Waiting for all players to connect</div>
-  );
-};
-export default function App(props) {
-  const gameStarted = useGameStarted(false);
-  const loggedIn = useLoggedIn(false);
-  const players = useServerGivenPlayers();
-  const [playerCount, setPlayerCount] = useState(5);
-  const clientIsQuestLeader = useClientIsQuestLeader();
+export default function App() {
+  const loggedIn = useLoggedIn();
+  const game = useGame();
+
+  console.log({ game });
 
   return (
     <SocketContext.Provider value={socket}>
       <div className="App">
-        <GameScreen players={players} clientIsQuestLeader={clientIsQuestLeader} />
-        <LoginScreen />
-        {/* <WaitingForPlayers /> */}
+        {game ? (<GameScreen game={game} />) : !loggedIn ? (<LoginForm loggedIn={loggedIn} />) : (<LobbyScreen />)}
       </div>
     </SocketContext.Provider>
   );
+
 }
 
-
-
-const useGameStarted = (initial) => {
-  const [gameStarted, setGameStarted] = useState(initial);
-
-  const gameStartedHandle = msg => setGameStarted(msg);
+const useLoggedIn = () => {
+  const [loggedIn, setLoggedIn] = useState();
 
   useEffect(() => {
-    socket.on(CLIENT_ACTION.GAME_STARTED, gameStartedHandle);
+    /* Setup */
+    const handleLoggedIn = (player) => {
+      const loggedIn = !!player;
+      if (loggedIn) {
+        CookieService.SetPlayer(player);
+      }
+      setLoggedIn(loggedIn);
+    };
+    socket.on(CLIENT_ACTION.LOGGED_IN, handleLoggedIn);
 
-    return () => socket.removeListener(CLIENT_ACTION.GAME_STARTED, gameStartedHandle);
-  });
+    /* Check for existing login */
+    const player = CookieService.GetPlayer();
+    if (!loggedIn) {
+      socket.emit(CLIENT_ACTION.CHECK_LOGGED_IN, { uuid: player.id });
+    }
 
-  return gameStarted;
-};
-
-const useLoggedIn = (initial) => {
-
-  const [loggedIn, setLoggedIn] = useState(initial);
-
-  useEffect(() => {
-    const handle = msg => setLoggedIn(msg);
-    socket.on(CLIENT_ACTION.LOGGED_IN, handle);
-
-    return () => socket.removeEventListener(CLIENT_ACTION.LOGGED_IN, handle);
-  });
+    return () => socket.removeListener(CLIENT_ACTION.LOGGED_IN, handleLoggedIn);
+  }, [loggedIn]);
 
   return loggedIn;
-};
 
-const useServerGivenPlayers = (initial) => {
-  const [players, setPlayers] = useState(initial);
-  const createCharacter = (cardImage) => require(`./pictures/characters/${cardImage}.jpg`);
+}
 
+const useGame = () => {
+  const [game, setGame] = useState(undefined);
 
   useEffect(() => {
-    const handle = (players) => {
-      const tmpPlayers = players.map((player) => {
-        return { playerName: player.name, cardImage: createCharacter(player.cardImage), vote: 'approve' };
-      });
-      //tmpPlayers.push({playerName: players[0].name, cardImage: createCharacter(players[0].character), vote: 'approve'})
-      setPlayers(tmpPlayers);
-    };
+    /* Setup */
+    const handleSetGame = (gameResponse) => {
+      console.log({ gameResponse });
+      setGame(gameResponse);
+    }
 
-    socket.on(CLIENT_ACTION.GAME_PLAYERS, handle);
+    /* Check for existing game */
+    const player = CookieService.GetPlayer();
+    if (!game) {
+      socket.emit(CLIENT_ACTION.GET_GAME, { playerId: player.id })
+    }
 
-    return () => socket.removeListener(CLIENT_ACTION.GAME_PLAYERS, handle);
-  });
+    socket.on(CLIENT_ACTION.SET_GAME, handleSetGame);
+    return () => socket.removeListener(CLIENT_ACTION.SET_GAME, handleSetGame);
 
-  return players;
-};
-
-const useClientIsQuestLeader = () => {
-  const [clientIsQuestLeader, setClientIsQuestLeader] = useState(false);
-
-  const handleClientIsQuestLeader = isQuestLeader => { console.log(isQuestLeader); setClientIsQuestLeader(isQuestLeader); }
-  useEffect(() => {
-    socket.on(CLIENT_ACTION.IS_QUEST_LEADER, handleClientIsQuestLeader);
-
-    return () => socket.removeListener(CLIENT_ACTION.IS_QUEST_LEADER, handleClientIsQuestLeader);
-  });
-
-  return clientIsQuestLeader
+  }, [game]);
+  return game;
 }

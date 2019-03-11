@@ -7,30 +7,32 @@
     flex-direction: row;
     justify-content: space-evenly;
     align-items: center;
-
     .name {
         position: relative;
     }
-
     .confirm-quest-players {
         background-color: limegreen;
     }
-
     .player {
         width: 135px;
         background-color: (black, 0.2);
         position: relative;
         overflow: hidden;
         border-radius: 5px;
-
         &.selected {
             border: 5px solid black;
-
             img {
                 content: url("../../pictures//tokens//team-token.png");
             }
         }
-
+        img {
+            &.good {
+                
+            }
+            &.evil {
+                // TODO: Evil Card back
+            }
+        }
         .name {
             background-color: black;
             color: white;
@@ -38,10 +40,8 @@
             text-align: center;
             top: 1rem;
         }
-
         img {
             width: 100%;
         }
     }
-
 }

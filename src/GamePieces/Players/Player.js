@@ -1,12 +1,26 @@
 import React from 'react';
 
-export default function Player({ playerName, cardImage, selected, onClick  }) {
+const CardImage = ({ character, alignment }) => {
+    if (character) {
+        const src = require(`../../pictures/characters/${character}.jpg`);
+        return (<img src={src} alt="character-card" title={character} />)
+    } else if (alignment) {
+        const src = require(`../../pictures/characters/loyalty-back.jpg`);
+        return (<img src={src} alt="character-card" className={alignment} />)
+    } else {
+        const src = require(`../../pictures/characters/loyalty-back.jpg`);
+        return (<img src={src} alt="character-card" />)
+    }
+};
+
+export default function Player({ name, character, alignment, selected, onClick }) {
+
     return (
         <div className={"player" + (selected ? ' selected' : '')} onClick={onClick}>
-            <div className="name">{playerName}</div>
+            <div className="name">{name}</div>
             <div className="card-image">
-                <img src={cardImage} alt="character-card" />
+                <CardImage character={character} alignment={alignment} />
             </div>
         </div>
     )
-}
+} 

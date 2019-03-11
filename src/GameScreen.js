@@ -1,31 +1,17 @@
 import React, { useState, useEffect, useContext } from 'react';
 import GameBoard from './GamePieces/GameBoard/GameBoard';
-import './GameScreen.scss';
 import PlayerInformations from './GamePieces/Players/PlayerInformations';
 import SuccessFail from './GamePieces/GameBoard/Votes/SuccessFail';
 import { SocketContext } from './App';
+import './GameScreen.scss';
 const CLIENT_ACTION = require('./AppConstants');
 
 const defaultQuestPassFail = [undefined, undefined, undefined, undefined, undefined];
-const createCharacter = (name) => require(`./pictures/characters/${name}.jpg`);
 
-const characters = ['assassin', 'loyal-servant-0', 'merlin', 'minion-of-mordred-0', 'mordred', 'morgana', 'oberon', 'percival',
-    'loyal-servant-1', 'loyal-servant-2'];
-
-const createPlayers = (playerCount) => {
-    const players = [];
-    for (let i = 0; i < playerCount; i++) {
-        players.push({ playerName: `Player ${i}`, cardImage: createCharacter(characters[i]), vote: i % 2 === 0 ? 'approve' : 'reject' })
-    }
-    return players
-}
-
-export default function GameScreen({ players, playerCount, clientIsQuestLeader }) {
+export default function GameScreen({ game }) {
     const socket = useContext(SocketContext);
     const [isOnQuest, setIsOnQuest] = useState(false);
     const [questPassFail, setQuestPassFail] = useState(defaultQuestPassFail);
-    const questLeader = useQuestLeader(null);
-    const numQuestParticipants = useNumQuestParticipants(socket);
 
     useEffect(() => {
         const handle = msg => {
@@ -53,12 +39,12 @@ export default function GameScreen({ players, playerCount, clientIsQuestLeader }
     return (
         <div className="game-screen">
             <SuccessFail isOnQuest={isOnQuest} isGood={false} />
-            {players && (
+            {game.players && (
                 <>
-                    <PlayerInformations players={players} active={clientIsQuestLeader} numQuestParticipants={numQuestParticipants} />
+                    <PlayerInformations players={game.players} active={true} numQuestParticipants={game.quests[game.questNumber]} />
                     <GameBoard
-                        players={players}
-                        playerCount={playerCount}
+                        players={game.players}
+                        playerCount={game.players.length}
                         questPassFail={questPassFail}
                     />
                 </>
@@ -66,23 +52,3 @@ export default function GameScreen({ players, playerCount, clientIsQuestLeader }
         </div>
     )
 }
-
-const useQuestLeader = () => {
-    const [questLeader, setQuestLeader] = useState();
-
-    // useEffect
-};
-
-const useNumQuestParticipants = (socket) => {
-    const [numQuestParticipants, setNumQuestParticipants] = useState();
-
-    const handleMsg = num => {
-        setNumQuestParticipants(num);
-    }
-    useEffect(() => {
-        socket.on(CLIENT_ACTION.NUM_QUEST_PARTICIPANTS, handleMsg);
-        return () => socket.removeListener(CLIENT_ACTION.NUM_QUEST_PARTICIPANTS, handleMsg);
-    }, [numQuestParticipants]);
-
-    return numQuestParticipants;
-};
