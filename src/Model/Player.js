@@ -1,5 +1,4 @@
 const uuidv4 = require('uuid/v4');
-const WHO_CHARACTER_CAN_SEE = require('../GamePieces/Characters/WhoCharacterCanSee');
 
 class Player {
 

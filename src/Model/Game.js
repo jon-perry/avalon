@@ -21,6 +21,16 @@ class Game {
         this.players.push(player)
     }
 
+    toggleSelectedPlayer(selectedPlayerId) {
+        const nextState = this.selectedPlayers.slice();
+        if (!nextState.includes(selectedPlayerId)) {
+            nextState.push(selectedPlayerId);
+            this.selectedPlayers = nextState;
+        } else {
+            this.selectedPlayers = nextState.filter((playerId) => playerId !== selectedPlayerId);
+        }
+    }
+
     assignCharacters() {
         const GAME_VARIANTS = CHARACTER_GAME_VARIANTS[this.players.length];
         const randomVariant = Math.floor(Math.random() * GAME_VARIANTS.length);
@@ -34,18 +44,20 @@ class Game {
     asSeenBy(id) {
         const viewingPlayer = this.players.find((player) => player.id === id);
         return {
-            quests: this.quests,
+            quests: this.quests.map((quest) => quest.asSeenBy(id)),
             phase: this.phase,
             players: this.players.map((player) => player.asSeenBy(viewingPlayer)),
             questLeaderIndex: this.questLeaderIndex,
             questNumber: this.questNumber,
+            selectedPlayers: this.selectedPlayers,
+            currentQuest: this.quests[this.questNumber],
         }
     }
 
     getQuestInfo() {
         const questInfos = QUEST_INFO[this.players.length];
-        const quests = questInfos.quests.map((questInfo, index) => {
-            return new Quest(questInfo, this.players.length > 6 && index === 3, index);
+        const quests = questInfos.quests.map((questInfo) => {
+            return new Quest(questInfo, this.players.length > 6 && index === 3);
         });
         return quests;
     }

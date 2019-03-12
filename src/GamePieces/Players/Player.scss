@@ -1,31 +1,29 @@
-// .player {
-//     display: grid;
-//     grid-template-rows: 1fr 10fr;
-//     grid-template-columns: 1fr 1fr;
-
-//     .player-name {
-//         background-color: yellow;
-//         grid-column: 1 / span 2;
-//         font-weight: bold;
-//         color: purple;
-//         border-style: solid;
-//         border-width: 1px;
-//     }
-//     .character-card {
-//         background-color: rgb(46, 43, 43);
-//         grid-column: 1 / span 1;
-//         img {
-//             max-width: 100%;
-//         }
-//     }
-//     .last-vote {
-//         grid-column: 2 / span 1;
-//         background-color: rgb(65, 60, 60);
-//         img {
-//             position: relative;
-//             top: 3rem;
-//             max-width: 80%;
-//         }
-//     }
-
-// }
+.player {
+    width: 135px;
+    background-color: (black, 0.2);
+    position: relative;
+    overflow: hidden;
+    border-radius: 5px;
+    &.selected {
+        border: 5px solid black;
+        img {
+            content: url("../../pictures//tokens//team-token.png");
+        }
+    }
+    img {
+        &.good {}
+        &.evil {
+            // TODO: Evil Card back
+        }
+    }
+    .name {
+        background-color: black;
+        color: white;
+        position: absolute;
+        text-align: center;
+        top: 1rem;
+    }
+    img {
+        width: 100%;
+    }
+}

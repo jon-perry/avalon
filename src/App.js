@@ -4,6 +4,7 @@ import LobbyScreen from './Lobby/LobbyScreen';
 import LoginForm from './Lobby/LoginForm';
 import CookieService from './Util/CookieService';
 import './App.css';
+import './GamePieces/GameBoard/Votes/ApproveReject';
 const CLIENT_ACTION = require('./AppConstants');
 
 export const SocketContext = React.createContext(null);
@@ -14,8 +15,6 @@ const socket = io.connect('localhost:8888');
 export default function App() {
   const loggedIn = useLoggedIn();
   const game = useGame();
-
-  console.log({ game });
 
   return (
     <SocketContext.Provider value={socket}>
@@ -33,6 +32,7 @@ const useLoggedIn = () => {
   useEffect(() => {
     /* Setup */
     const handleLoggedIn = (player) => {
+      console.log({player});
       const loggedIn = !!player;
       if (loggedIn) {
         CookieService.SetPlayer(player);
@@ -49,7 +49,7 @@ const useLoggedIn = () => {
 
     return () => socket.removeListener(CLIENT_ACTION.LOGGED_IN, handleLoggedIn);
   }, [loggedIn]);
-  
+
   return loggedIn;
 }
 
@@ -59,7 +59,6 @@ const useGame = () => {
   useEffect(() => {
     /* Setup */
     const handleSetGame = (gameResponse) => {
-      console.log({ gameResponse });
       setGame(gameResponse);
     }
 

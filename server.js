@@ -6,20 +6,6 @@ const configureLobbyActions = require('./LobbyActions');
 
 const CLIENT_ACTION = require('./src/AppConstants');
 
-/* Content Information */
-const QUEST_INFO = require('./src/GamePieces/GameBoard/Quests/QuestInfo');
-const WHO_CHARACTER_CAN_SEE = require('./src/GamePieces/Characters/WhoCharacterCanSee');
-const CHARACTER_GAME_VARIANTS = require('./src/GamePieces/Characters/GameVariants');
-
-
-// need to set up to have playersInformation in players to keep track of who voted for what as well as their character
-
-const PLAYER_COUNT = 5;
-
-let PRESET_CHARACTERS = CHARACTER_GAME_VARIANTS[PLAYER_COUNT][0];
-
-// const game = new Game(undefined, PRESET_CHARACTERS);
-
 const lobbies = [new Lobby()];
 const players = [];
 
@@ -70,9 +56,9 @@ io.on('connection', (client) => {
         const game = new Game(lobby.players);
         lobby.addGame(game);
         lobby.started = true;
+        game.phase = CLIENT_ACTION.GAME_PHASES.QUEST_PLAYER_SELECTION;
         io.emit(CLIENT_ACTION.SET_LOBBIES, lobbies.filter((lobby) => !lobby.started).map((lobby) => lobby.getLobbyData()));
         lobby.players.forEach(player => {
-            console.log({ clientId: player.clientId });
             io.to(`${player.clientId}`).emit(CLIENT_ACTION.SET_GAME, game.asSeenBy(player.id))
         });
     });
@@ -84,23 +70,36 @@ io.on('connection', (client) => {
         }
     });
 
-    client.on(CLIENT_ACTION.PLAYER_SELECT, ({ playerId, nextState }) => {
-        const game = findGame(playerId);
+    client.on(CLIENT_ACTION.PLAYER_SELECT, ({ selectedPlayerId }) => {
+        const game = findGame(selectedPlayerId);
         if (game) {
-            game.selectedPlayers = nextState;
-            client.broadcast.emit(CLIENT_ACTION.PLAYER_SELECT, { nextState });
-
+            game.toggleSelectedPlayer(selectedPlayerId);
+            game.players.forEach((player) => io.to(player.clientId).emit(CLIENT_ACTION.SET_GAME, game.asSeenBy(player.id)));
         }
     });
 
-    client.on(CLIENT_ACTION.CONFIRM_SELECTED_PLAYERS, ({ playerId, selectedPlayers }) => {
-        const game = findGame(playerId);
+    client.on(CLIENT_ACTION.CONFIRM_SELECTED_PLAYERS, ({ id }) => {
+        const game = findGame(id);
         if (game) {
-            game.selectedPlayers = selectedPlayers;
             game.phase = CLIENT_ACTION.GAME_PHASES.QUEST_PLAYER_APPROVAL;
-            io.emit(CLIENT_ACTION.SET_GAME_PHASE, CLIENT_ACTION.GAME_PHASES.QUEST_PLAYER_APPROVAL);
+            game.players.forEach((player) => io.to(player.clientId).emit(CLIENT_ACTION.SET_GAME, game.asSeenBy(player.id)));
         }
     });
+
+    client.on(CLIENT_ACTION.SELECT_APPROVE_REJECT, ({ id, voteChoice }) => {
+        console.log({ id, voteChoice });
+        console.log(lobbies[0]);
+        const game = findGame(id);
+        console.log({ game });
+        if (game) {
+            console.log(CLIENT_ACTION.SELECT_APPROVE_REJECT);
+            const voteComplete = game.quests[game.questNumber].addApproveRejectResult(id, voteChoice, game.players.length);
+            if (voteComplete) {
+                // STATE CHANGES!?!
+            }
+            game.players.forEach((player) => io.to(player.clientId).emit(CLIENT_ACTION.SET_GAME, game.asSeenBy(player.id)));
+        }
+    })
 
 });
 

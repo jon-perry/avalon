@@ -10,7 +10,6 @@ class Quests extends Component {
     }
     render() {
         const { quests, playerCount } = this.props;
-        console.log({playerCount});
         return (
             <div className="quests">
                 <div className="quest-title">QUESTS</div>

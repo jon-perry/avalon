@@ -20,6 +20,7 @@ module.exports = {
         PLAYER_SELECT: 'playerSelect',
         CONFIRM_SELECTED_PLAYERS: 'confirmSelectedPlayers',
         SET_GAME_PHASE: 'setGamePhase',
+        SELECT_APPROVE_REJECT: 'selectApproveReject',
 
         /* Game Phases */
         GAME_PHASES: {
@@ -28,6 +29,7 @@ module.exports = {
                 QUEST_PLAYER_SELECTION: 'questPlayerSelection',
                 QUEST_PLAYER_APPROVAL: 'questPlayerApproval',
                 QUEST: 'quest',
+                ASSASSIN: 'assassin',
                 IS_WINNER: 'isWinner',
         }
 
@@ -46,5 +48,4 @@ module.exports = {
         // SHOW_QUEST_PHASE: 'showQuestPhase',
         // SHOW_VOTE_PHASE: 'showVotePhase',
         // SUCCESS_FAIL_CONFIRMED: 'successFailConfirmed',
-        // VOTE_CONFIRMATION: 'voteConfirmation',
 }
