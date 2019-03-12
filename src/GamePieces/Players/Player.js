@@ -43,7 +43,7 @@ export default function Player({ name, id, character, alignment, selectedPlayers
     return (
         <>
             <div className={classes.join(' ')} onClick={() => handleSelectPlayer(id)}>
-                <div className="name">{name}</div>
+                <div className={"name" + (alignment ? ` ${alignment}` : '')}>{name}</div>
                 <div className="card-image">
                     <CardImage character={character} alignment={alignment} />
                 </div>

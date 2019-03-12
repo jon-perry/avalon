@@ -17,11 +17,17 @@
         }
     }
     .name {
-        background-color: black;
+        background-color: darkslategray;
         color: white;
         position: absolute;
         text-align: center;
         top: 1rem;
+        &.good {
+            background-color: blue;
+        }
+        &.evil {
+            background-color: crimson;
+        }
     }
     img {
         width: 100%;

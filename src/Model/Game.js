@@ -62,6 +62,10 @@ class Game {
         return quests;
     }
 
+    emitGameStateToPlayers(io) {
+        this.players.forEach((player) => io.to(player.clientId).emit(APP_CONSTANTS.SET_GAME, this.asSeenBy(player.id)));
+    }
+
     static Shuffle(array) {
         // taken from https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-tmpArray
         let tmpArray = array.slice();

@@ -82,7 +82,8 @@ io.on('connection', (client) => {
         const game = findGame(id);
         if (game) {
             game.phase = CLIENT_ACTION.GAME_PHASES.QUEST_PLAYER_APPROVAL;
-            game.players.forEach((player) => io.to(player.clientId).emit(CLIENT_ACTION.SET_GAME, game.asSeenBy(player.id)));
+            // game.players.forEach((player) => io.to(player.clientId).emit(CLIENT_ACTION.SET_GAME, game.asSeenBy(player.id)));
+            game.emitGameStateToPlayers(io);
         }
     });
 
@@ -97,7 +98,8 @@ io.on('connection', (client) => {
             if (voteComplete) {
                 // STATE CHANGES!?!
             }
-            game.players.forEach((player) => io.to(player.clientId).emit(CLIENT_ACTION.SET_GAME, game.asSeenBy(player.id)));
+            // game.players.forEach((player) => io.to(player.clientId).emit(CLIENT_ACTION.SET_GAME, game.asSeenBy(player.id)));
+            game.emitGameStateToPlayers(io);
         }
     })
 

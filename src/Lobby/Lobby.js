@@ -1,5 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { SocketContext } from '../App';
+import './Lobby.scss';
 import CookieService from '../Util/CookieService';
 const CLIENT_ACTION = require('../AppConstants');
 
