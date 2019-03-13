@@ -43,6 +43,8 @@ class Game {
 
     asSeenBy(id) {
         const viewingPlayer = this.players.find((player) => player.id === id);
+        const currentIndex = this.quests[this.questNumber].approveRejectVotes.length-1;
+        const approveRejectVotes = this.quests[this.questNumber].approveRejectVotes[currentIndex];
         return {
             quests: this.quests.map((quest) => quest.asSeenBy(id)),
             phase: this.phase,
@@ -51,6 +53,7 @@ class Game {
             questNumber: this.questNumber,
             selectedPlayers: this.selectedPlayers,
             currentQuest: this.quests[this.questNumber],
+            approveRejectVotes: approveRejectVotes,
         }
     }
 

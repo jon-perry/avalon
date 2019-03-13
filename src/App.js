@@ -32,7 +32,6 @@ const useLoggedIn = () => {
   useEffect(() => {
     /* Setup */
     const handleLoggedIn = (player) => {
-      console.log({player});
       const loggedIn = !!player;
       if (loggedIn) {
         CookieService.SetPlayer(player);

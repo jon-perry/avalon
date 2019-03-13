@@ -6,7 +6,7 @@ const gameQuestInfo = require('./QuestInfo.json');
 
 class Quests extends Component {
     handleClick = (event) => {
-        console.log(event.target);
+        // console.log(event.target);
     }
     render() {
         const { quests, playerCount } = this.props;

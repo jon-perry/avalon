@@ -82,23 +82,24 @@ io.on('connection', (client) => {
         const game = findGame(id);
         if (game) {
             game.phase = CLIENT_ACTION.GAME_PHASES.QUEST_PLAYER_APPROVAL;
-            // game.players.forEach((player) => io.to(player.clientId).emit(CLIENT_ACTION.SET_GAME, game.asSeenBy(player.id)));
             game.emitGameStateToPlayers(io);
         }
     });
 
     client.on(CLIENT_ACTION.SELECT_APPROVE_REJECT, ({ id, voteChoice }) => {
-        console.log({ id, voteChoice });
-        console.log(lobbies[0]);
         const game = findGame(id);
-        console.log({ game });
         if (game) {
-            console.log(CLIENT_ACTION.SELECT_APPROVE_REJECT);
+
             const voteComplete = game.quests[game.questNumber].addApproveRejectResult(id, voteChoice, game.players.length);
             if (voteComplete) {
-                // STATE CHANGES!?!
+                const currentRoundVotes = game.quests[game.questNumber].approveRejectVotes[game.quests[game.questNumber].approveRejectVotes.length - 1];
+
+                // TODO: emit player votes before caculating if it passes or fails
+                const rejectVotes = currentRoundVotes.filter(({voteChoice, id}) => voteChoice === 'reject');
+                const votePassed = rejectVotes < Math.ceil(game.players.length / 2);
+                console.log(votePassed);
+                game.phase = CLIENT_ACTION.GAME_PHASES.RESULT_APPROVE_REJECT;
             }
-            // game.players.forEach((player) => io.to(player.clientId).emit(CLIENT_ACTION.SET_GAME, game.asSeenBy(player.id)));
             game.emitGameStateToPlayers(io);
         }
     })

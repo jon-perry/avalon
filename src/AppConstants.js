@@ -28,6 +28,7 @@ module.exports = {
                 QUEST_SELECTION: 'questSelection',
                 QUEST_PLAYER_SELECTION: 'questPlayerSelection',
                 QUEST_PLAYER_APPROVAL: 'questPlayerApproval',
+                RESULT_APPROVE_REJECT: 'resultApproveReject',
                 QUEST: 'quest',
                 ASSASSIN: 'assassin',
                 IS_WINNER: 'isWinner',

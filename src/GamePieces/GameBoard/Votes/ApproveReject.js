@@ -2,7 +2,6 @@ import React, { useState, useContext } from 'react';
 import Approve from '../../Tokens/Approve';
 import Reject from '../../Tokens/Reject';
 import Modal from 'react-modal';
-import PlayerInformations from '../../Players/PlayerInformations';
 import './ApproveReject.scss';
 import { SocketContext } from '../../../App'
 import CookieService from '../../../Util/CookieService';
@@ -13,8 +12,8 @@ const ApproveRejectSelect = ({ questingPlayers, voteChoice, handleConfirm, handl
     <>
         <div className="questing-players">
             {
-                questingPlayers.map((questingPlayer) => (
-                    <Player {...questingPlayer} />
+                questingPlayers.map((questingPlayer, index) => (
+                    <Player {...questingPlayer} key={index} />
                 ))
             }
         </div>
@@ -46,9 +45,7 @@ export default function ApproveReject({ players, quest, selectedPlayers }) {
             id: undefined,
         }));
 
-    console.log({ quest });
     const resultIndex = quest.approveRejectVotes.length - 1
-    console.log({ data: quest.approveRejectVotes[resultIndex] });
     const clientHasVoted = quest.approveRejectVotes[resultIndex].some(({ id }) => clientId === id);
 
     const customStyles = {

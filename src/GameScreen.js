@@ -3,7 +3,11 @@ import GameBoard from './GamePieces/GameBoard/GameBoard';
 import PlayerInformations from './GamePieces/Players/PlayerInformations';
 import './GameScreen.scss';
 import ApproveReject from './GamePieces/GameBoard/Votes/ApproveReject';
+import ApproveRejectResult from './GamePieces/GameBoard/Votes/ApproveRejectResult';
+
+
 const CLIENT_ACTION = require('./AppConstants');
+
 
 export default function GameScreen({ game }) {
 
@@ -17,6 +21,9 @@ export default function GameScreen({ game }) {
                     quest={game.quests[game.questNumber]}
                     questLeaderIndex={game.questLeaderIndex}
                 />)
+            }
+            {
+                (game.phase === CLIENT_ACTION.GAME_PHASES.RESULT_APPROVE_REJECT) && (<ApproveRejectResult players={game.players} results={game.approveRejectVotes} />)
             }
             {game.players && (
                 <>
