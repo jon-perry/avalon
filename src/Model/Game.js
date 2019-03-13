@@ -70,6 +70,10 @@ class Game {
         return rejectVotes < Math.ceil(this.players.length / 2);
     }
 
+    votePassed() {
+        this.phase = APP_CONSTANTS.GAME_PHASES.QUEST;
+    }
+
     voteFailed() {
         this.failedVotes += 1;
         this.questLeaderIndex = (this.questLeaderIndex + 1) % this.players.length;

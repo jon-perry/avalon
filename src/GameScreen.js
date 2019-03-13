@@ -4,18 +4,25 @@ import PlayerInformations from './GamePieces/Players/PlayerInformations';
 import './GameScreen.scss';
 import ApproveReject from './GamePieces/GameBoard/Votes/ApproveReject';
 import ApproveRejectResult from './GamePieces/GameBoard/Votes/ApproveRejectResult';
+import SuccessFail from './GamePieces/GameBoard/Votes/SuccessFail';
+import CookieService from './Util/CookieService';
 
 
-const CLIENT_ACTION = require('./AppConstants');
+const APP_CONSTANTS = require('./AppConstants');
+
 
 
 export default function GameScreen({ game }) {
-    console.log(game.failedVotes);
+    const clientPlayer = CookieService.GetPlayer();
+    console.log(game.selectedPlayers);
+    console.log(clientPlayer.id);
+    console.log(game.selectedPlayers.some((playerId) => playerId === clientPlayer.id));
+    console.log(game.players.find((player) => player.id === clientPlayer.id).alignment === 'good')
     return (
-        
+
         <div className="game-screen">
             {
-                (game.phase === CLIENT_ACTION.GAME_PHASES.QUEST_PLAYER_APPROVAL) &&
+                (game.phase === APP_CONSTANTS.GAME_PHASES.QUEST_PLAYER_APPROVAL) &&
                 (<ApproveReject
                     selectedPlayers={game.selectedPlayers}
                     players={game.players}
@@ -24,7 +31,14 @@ export default function GameScreen({ game }) {
                 />)
             }
             {
-                (game.phase === CLIENT_ACTION.GAME_PHASES.RESULT_APPROVE_REJECT) && (<ApproveRejectResult players={game.players} quest={game.quests[game.questNumber]} />)
+                (game.phase === APP_CONSTANTS.GAME_PHASES.QUEST) &&
+                (<SuccessFail
+                    isOnQuest={game.selectedPlayers.some((playerId) => playerId === clientPlayer.id)}
+                    isGood={game.players.find((player) => player.id === clientPlayer.id).alignment === 'good'}
+                />)
+            }
+            {
+                (game.phase === APP_CONSTANTS.GAME_PHASES.RESULT_APPROVE_REJECT) && (<ApproveRejectResult players={game.players} quest={game.quests[game.questNumber]} />)
             }
             {game.players && (
                 <>
@@ -33,6 +47,7 @@ export default function GameScreen({ game }) {
                         questLeaderIndex={game.questLeaderIndex}
                         selectedPlayers={game.selectedPlayers}
                         numberOfParticipants={game.currentQuest.numberOfParticipants}
+                        gamePhase={game.phase}
                     />
                     <GameBoard
                         players={game.players}

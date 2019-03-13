@@ -17,13 +17,13 @@ const CardImage = ({ character, alignment }) => {
     }
 };
 
-export default function Player({ name, id, character, alignment, selectedPlayers = [], questLeaderId, numberOfParticipants }) {
+export default function Player({ gamePhase, name, id, character, alignment, selectedPlayers = [], questLeaderId, numberOfParticipants }) {
     const socket = useContext(SocketContext);
 
     const currentPlayer = CookieService.GetPlayer();
 
     const handleSelectPlayer = (selectedPlayerId) => {
-        if (currentPlayer.id === questLeaderId) {
+        if ((currentPlayer.id === questLeaderId) && (gamePhase === APP_CONSTANTS.GAME_PHASES.QUEST_PLAYER_SELECTION)) {
             socket.emit(APP_CONSTANTS.PLAYER_SELECT, { selectedPlayerId });
         }
     }
@@ -53,7 +53,7 @@ export default function Player({ name, id, character, alignment, selectedPlayers
                 <button
                     className="confirm-quest-players"
                     onClick={() => handleConfirmSelection()}
-                    disabled={selectedPlayers.length !== numberOfParticipants}
+                    disabled={(selectedPlayers.length !== numberOfParticipants) || (gamePhase !== APP_CONSTANTS.GAME_PHASES.QUEST_PLAYER_SELECTION)}
                 >
                     Confirm
                 </button>

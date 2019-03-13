@@ -95,15 +95,13 @@ io.on('connection', (client) => {
                 setTimeout(() => {
                     // TODO: hanldle moving onto next appropiate phase
                     if (game.voteDidPass()) {
-
+                        game.votePassed();
                     } else {
                         game.voteFailed();
-                        
                     }
-                    game.phase = APP_CONSTANTS.PLAYER_SELECT;
                     game.emitGameStateToPlayers(io);
 
-                }, 2000);
+                }, 750);
                 game.phase = APP_CONSTANTS.GAME_PHASES.RESULT_APPROVE_REJECT;
             }
             game.emitGameStateToPlayers(io);
