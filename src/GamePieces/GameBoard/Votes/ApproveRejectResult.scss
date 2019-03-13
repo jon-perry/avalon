@@ -1,3 +1,11 @@
-img {
-    width: 120px;
+.approve-reject-result{
+    display: flex;
+    flex-direction: row;
+    img {
+        width: 120px;
+    }
+
+    .approve-img, .reject-img {
+        height: 144px;
+    }
 }

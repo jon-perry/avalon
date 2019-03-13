@@ -4,7 +4,7 @@ const Lobby = require('./src/Model/Lobby');
 const Player = require('./src/Model/Player');
 const configureLobbyActions = require('./LobbyActions');
 
-const CLIENT_ACTION = require('./src/AppConstants');
+const APP_CONSTANTS = require('./src/AppConstants');
 
 const lobbies = [new Lobby()];
 const players = [];
@@ -28,81 +28,87 @@ const findGame = (playerId) => {
 
 io.on('connection', (client) => {
 
-    client.on(CLIENT_ACTION.LOGIN, ({ name }) => { // TODO: Store password
+    client.on(APP_CONSTANTS.LOGIN, ({ name }) => { // TODO: Store password
         const currentPlayer = findPlayer(name) || new Player(name); // Move new player to Registration
         players.push(currentPlayer);
         if (currentPlayer) {
             currentPlayer.setClientId(client.id);
-            client.emit(CLIENT_ACTION.LOGGED_IN, currentPlayer.getPlayerData());
+            client.emit(APP_CONSTANTS.LOGGED_IN, currentPlayer.getPlayerData());
         } else {
             // TODO: Error: No user exists
         }
     });
 
-    client.on(CLIENT_ACTION.CHECK_LOGGED_IN, ({ uuid }) => {
+    client.on(APP_CONSTANTS.CHECK_LOGGED_IN, ({ uuid }) => {
         const currentPlayer = findPlayer(uuid);
         if (currentPlayer) {
             currentPlayer.setClientId(client.id);
-            client.emit(CLIENT_ACTION.LOGGED_IN, currentPlayer.getPlayerData());
+            client.emit(APP_CONSTANTS.LOGGED_IN, currentPlayer.getPlayerData());
         } else {
-            client.emit(CLIENT_ACTION.LOGGED_IN, undefined);
+            client.emit(APP_CONSTANTS.LOGGED_IN, undefined);
         }
     });
 
     configureLobbyActions({ io, client, findLobby, findPlayer, lobbies });
 
-    client.on(CLIENT_ACTION.GAME_START, ({ id }) => {
+    client.on(APP_CONSTANTS.GAME_START, ({ id }) => {
         const lobby = findLobby(id);
         const game = new Game(lobby.players);
         lobby.addGame(game);
         lobby.started = true;
-        game.phase = CLIENT_ACTION.GAME_PHASES.QUEST_PLAYER_SELECTION;
-        io.emit(CLIENT_ACTION.SET_LOBBIES, lobbies.filter((lobby) => !lobby.started).map((lobby) => lobby.getLobbyData()));
+        game.phase = APP_CONSTANTS.GAME_PHASES.QUEST_PLAYER_SELECTION;
+        io.emit(APP_CONSTANTS.SET_LOBBIES, lobbies.filter((lobby) => !lobby.started).map((lobby) => lobby.getLobbyData()));
         lobby.players.forEach(player => {
-            io.to(`${player.clientId}`).emit(CLIENT_ACTION.SET_GAME, game.asSeenBy(player.id))
+            io.to(`${player.clientId}`).emit(APP_CONSTANTS.SET_GAME, game.asSeenBy(player.id))
         });
     });
 
-    client.on(CLIENT_ACTION.GET_GAME, ({ playerId }) => {
+    client.on(APP_CONSTANTS.GET_GAME, ({ playerId }) => {
         const game = findGame(playerId);
         if (game) {
-            client.emit(CLIENT_ACTION.SET_GAME, game.asSeenBy(playerId));
+            client.emit(APP_CONSTANTS.SET_GAME, game.asSeenBy(playerId));
         }
     });
 
-    client.on(CLIENT_ACTION.PLAYER_SELECT, ({ selectedPlayerId }) => {
+    client.on(APP_CONSTANTS.PLAYER_SELECT, ({ selectedPlayerId }) => {
         const game = findGame(selectedPlayerId);
         if (game) {
             game.toggleSelectedPlayer(selectedPlayerId);
-            game.players.forEach((player) => io.to(player.clientId).emit(CLIENT_ACTION.SET_GAME, game.asSeenBy(player.id)));
+            game.players.forEach((player) => io.to(player.clientId).emit(APP_CONSTANTS.SET_GAME, game.asSeenBy(player.id)));
         }
     });
 
-    client.on(CLIENT_ACTION.CONFIRM_SELECTED_PLAYERS, ({ id }) => {
+    client.on(APP_CONSTANTS.CONFIRM_SELECTED_PLAYERS, ({ id }) => {
         const game = findGame(id);
         if (game) {
-            game.phase = CLIENT_ACTION.GAME_PHASES.QUEST_PLAYER_APPROVAL;
+            game.phase = APP_CONSTANTS.GAME_PHASES.QUEST_PLAYER_APPROVAL;
             game.emitGameStateToPlayers(io);
         }
     });
 
-    client.on(CLIENT_ACTION.SELECT_APPROVE_REJECT, ({ id, voteChoice }) => {
+    client.on(APP_CONSTANTS.SELECT_APPROVE_REJECT, ({ id, voteChoice }) => {
         const game = findGame(id);
         if (game) {
 
             const voteComplete = game.quests[game.questNumber].addApproveRejectResult(id, voteChoice, game.players.length);
             if (voteComplete) {
-                const currentRoundVotes = game.quests[game.questNumber].approveRejectVotes[game.quests[game.questNumber].approveRejectVotes.length - 1];
+                setTimeout(() => {
+                    // TODO: hanldle moving onto next appropiate phase
+                    if (game.voteDidPass()) {
 
-                // TODO: emit player votes before caculating if it passes or fails
-                const rejectVotes = currentRoundVotes.filter(({voteChoice, id}) => voteChoice === 'reject');
-                const votePassed = rejectVotes < Math.ceil(game.players.length / 2);
-                console.log(votePassed);
-                game.phase = CLIENT_ACTION.GAME_PHASES.RESULT_APPROVE_REJECT;
+                    } else {
+                        game.voteFailed();
+                        
+                    }
+                    game.phase = APP_CONSTANTS.PLAYER_SELECT;
+                    game.emitGameStateToPlayers(io);
+
+                }, 2000);
+                game.phase = APP_CONSTANTS.GAME_PHASES.RESULT_APPROVE_REJECT;
             }
             game.emitGameStateToPlayers(io);
         }
-    })
+    });
 
 });
 

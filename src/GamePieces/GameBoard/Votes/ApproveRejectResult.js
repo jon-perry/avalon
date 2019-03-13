@@ -5,7 +5,8 @@ import Reject from '../../Tokens/Reject';
 import Modal from 'react-modal'
 import './ApproveRejectResult.scss';
 
-export default function ApproveRejectResult({ players, results }) {
+export default function ApproveRejectResult({ players, quest }) {
+    const results = quest.approveRejectVotes[quest.approveRejectVotes.length - 1];
     const playerData = players.map((player) => {
         const voteChoice = results.find((result) => result.id === player.id).voteChoice;
         return { ...player, id: undefined, voteChoice: voteChoice }

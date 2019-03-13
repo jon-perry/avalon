@@ -14,7 +14,7 @@ const VoteMarker = ({ currentVoteIndex, voteIndex }) => (
     </div>
 )
 
-export default function Votes() {
+export default function Votes({ numFailedVotes }) {
     const socket = useContext(SocketContext);
     const currentVoteIndex = useVoteIndex(socket);
     return (
@@ -23,7 +23,7 @@ export default function Votes() {
             <div className="vote-markers">
                 {
                     [0, 1, 2, 3, 4].map((voteIndex) => (
-                        <VoteMarker key={voteIndex} currentVoteIndex={currentVoteIndex} voteIndex={voteIndex} />
+                        <VoteMarker key={voteIndex} currentVoteIndex={numFailedVotes - 1} voteIndex={voteIndex} />
                     ))
                 }
             </div>

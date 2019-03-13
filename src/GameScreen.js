@@ -10,8 +10,9 @@ const CLIENT_ACTION = require('./AppConstants');
 
 
 export default function GameScreen({ game }) {
-
+    console.log(game.failedVotes);
     return (
+        
         <div className="game-screen">
             {
                 (game.phase === CLIENT_ACTION.GAME_PHASES.QUEST_PLAYER_APPROVAL) &&
@@ -23,7 +24,7 @@ export default function GameScreen({ game }) {
                 />)
             }
             {
-                (game.phase === CLIENT_ACTION.GAME_PHASES.RESULT_APPROVE_REJECT) && (<ApproveRejectResult players={game.players} results={game.approveRejectVotes} />)
+                (game.phase === CLIENT_ACTION.GAME_PHASES.RESULT_APPROVE_REJECT) && (<ApproveRejectResult players={game.players} quest={game.quests[game.questNumber]} />)
             }
             {game.players && (
                 <>
@@ -36,6 +37,7 @@ export default function GameScreen({ game }) {
                     <GameBoard
                         players={game.players}
                         quests={game.quests}
+                        numFailedVotes={game.failedVotes}
                     />
                 </>
             )}

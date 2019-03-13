@@ -14,6 +14,7 @@ class Game {
         this.questNumber = 0;
         this.questLeaderIndex = Math.floor(Math.random() * this.players.length);
         this.selectedPlayers = [];
+        this.failedVotes = 0;
         this.assignCharacters();
     }
 
@@ -43,8 +44,6 @@ class Game {
 
     asSeenBy(id) {
         const viewingPlayer = this.players.find((player) => player.id === id);
-        const currentIndex = this.quests[this.questNumber].approveRejectVotes.length-1;
-        const approveRejectVotes = this.quests[this.questNumber].approveRejectVotes[currentIndex];
         return {
             quests: this.quests.map((quest) => quest.asSeenBy(id)),
             phase: this.phase,
@@ -53,7 +52,7 @@ class Game {
             questNumber: this.questNumber,
             selectedPlayers: this.selectedPlayers,
             currentQuest: this.quests[this.questNumber],
-            approveRejectVotes: approveRejectVotes,
+            failedVotes: this.failedVotes,
         }
     }
 
@@ -63,6 +62,22 @@ class Game {
             return new Quest(questInfo, this.players.length > 6 && index === 3);
         });
         return quests;
+    }
+
+    voteDidPass() {
+        const currentRoundVotes = this.quests[this.questNumber].approveRejectVotes[this.quests[this.questNumber].approveRejectVotes.length - 1];
+        const rejectVotes = currentRoundVotes.filter(({ voteChoice, id }) => voteChoice === 'reject');
+        return rejectVotes < Math.ceil(this.players.length / 2);
+    }
+
+    voteFailed() {
+        this.failedVotes += 1;
+        this.questLeaderIndex = (this.questLeaderIndex + 1) % this.players.length;
+        this.phase = APP_CONSTANTS.GAME_PHASES.QUEST_PLAYER_SELECTION
+        this.quests[this.questNumber].questCounter++;
+        this.quests[this.questNumber].approveRejectVotes.push([]);
+        this.selectedPlayers = [];
+
     }
 
     emitGameStateToPlayers(io) {
@@ -86,6 +101,7 @@ class Game {
         }
         return tmpArray;
     };
+
 
 }
 

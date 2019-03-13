@@ -26,6 +26,10 @@ class Quest {
         }
     }
 
+    addParticipants(participants) {
+        
+    }
+
 }
 
 module.exports = Quest;
