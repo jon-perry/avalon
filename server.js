@@ -74,7 +74,8 @@ io.on('connection', (client) => {
         const game = findGame(selectedPlayerId);
         if (game) {
             game.toggleSelectedPlayer(selectedPlayerId);
-            game.players.forEach((player) => io.to(player.clientId).emit(APP_CONSTANTS.SET_GAME, game.asSeenBy(player.id)));
+            // game.players.forEach((player) => io.to(player.clientId).emit(APP_CONSTANTS.SET_GAME, game.asSeenBy(player.id)));
+            emitGameStateToPlayers(game);
         }
     });
 
@@ -98,9 +99,10 @@ io.on('connection', (client) => {
                     } else {
                         game.setVoteFailed();
                     }
+                    handlePossibleWinner(game);
                     emitGameStateToPlayers(game);
 
-                }, 750);
+                }, 200);
                 game.phase = APP_CONSTANTS.GAME_PHASES.RESULT_APPROVE_REJECT;
             }
             emitGameStateToPlayers(game);
@@ -113,15 +115,43 @@ io.on('connection', (client) => {
             const currentQuest = game.quests[game.questNumber]
             const successFailComplete = currentQuest.addSuccessFailResult(choice);
             if (successFailComplete) {
-                const questPassed = game.getSuccessFailResult();
-                console.log(questPassed);
-                if (questPassed) {
-                    game.setQuestPassed();
-                } else {
-                    game.setQuestFailed();
-                }
+                setTimeout(() => {
+                    const questPassed = game.getSuccessFailResult();
+                    if (questPassed) {
+                        game.setQuestPassed();
+                    } else {
+                        game.setQuestFailed();
+                    }
+                    handlePossibleWinner(game);
+                    emitGameStateToPlayers(game);
+                }, 200);
+                game.phase = APP_CONSTANTS.GAME_PHASES.RESULT_SUCCESS_FAIL;
+                currentQuest.shuffleResult();
                 emitGameStateToPlayers(game);
             }
+        }
+    });
+
+    client.on(APP_CONSTANTS.ASSASSIN_PLAYER_SELECT, ({ selectedPlayerId }) => {
+        const game = findGame(selectedPlayerId);
+        if (game) {
+            game.toggleSelectedPlayer(selectedPlayerId);
+            emitGameStateToPlayers(game);
+        }
+    });
+
+    client.on(APP_CONSTANTS.CONFIRM_ASSASSIN_SELECTION, ({ id }) => {
+        const game = findGame(id);
+        if (game) {
+            const selectedPlayer = game.players.find((player) => player.id === game.selectedPlayers[0]);
+            if (selectedPlayer.character === 'merlin') {
+                game.winner = APP_CONSTANTS.WINNER.ASSASSIN_KILL;
+                game.phase = APP_CONSTANTS.GAME_PHASES.WINNER_EXISTS;
+            } else {
+                game.winner = APP_CONSTANTS.WINNER.GOOD;
+                game.phase = APP_CONSTANTS.GAME_PHASES.WINNER_EXISTS;
+            }
+            emitGameStateToPlayers(game);
         }
     });
 });
@@ -129,6 +159,22 @@ io.on('connection', (client) => {
 const emitGameStateToPlayers = (game) => {
     game.players.forEach((player) => io.to(player.clientId).emit(APP_CONSTANTS.SET_GAME, game.asSeenBy(player.id)));
 }
+
+const handlePossibleWinner = (game) => {
+    const winner = game.getWinner();
+    if (winner) {
+        if (winner !== APP_CONSTANTS.WINNER.ASSASSIN_EXISTS) {
+            game.phase = APP_CONSTANTS.GAME_PHASES.WINNER_EXISTS;
+            game.winner = winner;
+        } else {
+            game.phase = APP_CONSTANTS.GAME_PHASES.ASSASSIN;
+            game.questLeaderIndex = game.players.findIndex(player => player.character === 'assassin');
+        }
+    } else {
+        return;
+    }
+
+};
 
 
 

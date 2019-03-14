@@ -42,7 +42,7 @@ class Player {
                 return {
                     id: this.id,
                     name: this.name,
-                    character: this.player.character === 'merlin' || this.player.character === 'morgana' ? 'merlin' : undefined,
+                    character: this.character === 'merlin' || this.character === 'morgana' ? 'merlin' : undefined,
                 }
             } else if (viewingPlayer.alignment === 'evil' && viewingPlayer.character !== 'oberon' && this.alignment === 'evil') {
                 return {

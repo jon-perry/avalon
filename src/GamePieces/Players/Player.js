@@ -23,13 +23,25 @@ export default function Player({ gamePhase, name, id, character, alignment, sele
     const currentPlayer = CookieService.GetPlayer();
 
     const handleSelectPlayer = (selectedPlayerId) => {
-        if ((currentPlayer.id === questLeaderId) && (gamePhase === APP_CONSTANTS.GAME_PHASES.QUEST_PLAYER_SELECTION)) {
-            socket.emit(APP_CONSTANTS.PLAYER_SELECT, { selectedPlayerId });
+        if ((currentPlayer.id === questLeaderId)) {
+            if (gamePhase === APP_CONSTANTS.GAME_PHASES.QUEST_PLAYER_SELECTION) {
+                socket.emit(APP_CONSTANTS.PLAYER_SELECT, { selectedPlayerId });
+            } else if (gamePhase === APP_CONSTANTS.GAME_PHASES.ASSASSIN) {
+                // don't allow the assassin to select themselves
+                if (currentPlayer.id === id) {
+                    return;
+                }
+                socket.emit(APP_CONSTANTS.ASSASSIN_PLAYER_SELECT, { selectedPlayerId });
+            }
         }
     }
 
     const handleConfirmSelection = () => {
-        socket.emit(APP_CONSTANTS.CONFIRM_SELECTED_PLAYERS, { id });
+        if (gamePhase === APP_CONSTANTS.GAME_PHASES.QUEST_PLAYER_SELECTION) {
+            socket.emit(APP_CONSTANTS.CONFIRM_SELECTED_PLAYERS, { id });
+        } else if (gamePhase === APP_CONSTANTS.GAME_PHASES.ASSASSIN) {
+            socket.emit(APP_CONSTANTS.CONFIRM_ASSASSIN_SELECTION, { id })
+        }
     };
 
     const classes = ['player'];
@@ -53,7 +65,9 @@ export default function Player({ gamePhase, name, id, character, alignment, sele
                 <button
                     className="confirm-quest-players"
                     onClick={() => handleConfirmSelection()}
-                    disabled={(selectedPlayers.length !== numberOfParticipants) || (gamePhase !== APP_CONSTANTS.GAME_PHASES.QUEST_PLAYER_SELECTION)}
+                    disabled={(selectedPlayers.length !== numberOfParticipants) ||
+                        ((gamePhase !== APP_CONSTANTS.GAME_PHASES.QUEST_PLAYER_SELECTION) &&
+                            (gamePhase !== APP_CONSTANTS.GAME_PHASES.ASSASSIN))}
                 >
                     Confirm
                 </button>

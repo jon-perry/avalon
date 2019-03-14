@@ -1,6 +1,10 @@
 .game-screen {
-    width: 75%;
+    // TODO: Fix this to scale nicer 
+    // transform: scale(0.67, 0.67);
     display: grid;
+    width: 80%;
+    // margin-left: -25%;
+    // margin-top: -12%;
     grid-template-areas: "player-informations-grid success-fail"
                          "game-board game-board"
 }

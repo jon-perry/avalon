@@ -8,6 +8,7 @@ const Details = ({ playerCount, questLeader }) => {
     const combinations = {
         1: ["1 Player", "Test Mode"],
         2: ["2 Player", "Test Mode"],
+        3: ["3 Player", "Test Mode"],
         5: ["5 Players", "2 Minions of Morderd"],
         6: ["6 Players", "2 Minions of Morderd"],
         7: ["7 Players", "3 Minions of Mordred"],

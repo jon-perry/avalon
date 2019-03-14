@@ -6,6 +6,9 @@ import ApproveReject from './GamePieces/GameBoard/Votes/ApproveReject';
 import ApproveRejectResult from './GamePieces/GameBoard/Votes/ApproveRejectResult';
 import SuccessFail from './GamePieces/GameBoard/Votes/SuccessFail';
 import CookieService from './Util/CookieService';
+import SuccessFailResults from './GamePieces/GameBoard/Votes/SuccessFailResults';
+import GameOver from './GamePieces/GameBoard/GameOver';
+import AssassinPhase from './GamePieces/GameBoard/AssassinPhase';
 
 
 const APP_CONSTANTS = require('./AppConstants');
@@ -15,6 +18,13 @@ const APP_CONSTANTS = require('./AppConstants');
 export default function GameScreen({ game }) {
     const clientPlayer = CookieService.GetPlayer();
     const isClientGood = game.players.find((player) => player.id === clientPlayer.id).alignment === 'good';
+
+    // TODO: Fix this so that game does not crash after handling last quest success/fail
+    if (game.questNumber === 5) {
+        game.questNumber -= 1;
+        game.currentQuest = game.quests[game.questNumber];
+    }
+    const successFailVotes = game.quests[game.questNumber].successFailVotes;
 
     return (
         <div className="game-screen">
@@ -28,6 +38,9 @@ export default function GameScreen({ game }) {
                 />)
             }
             {
+                (game.phase === APP_CONSTANTS.GAME_PHASES.RESULT_APPROVE_REJECT) && (<ApproveRejectResult players={game.players} quest={game.quests[game.questNumber]} />)
+            }
+            {
                 (game.phase === APP_CONSTANTS.GAME_PHASES.QUEST) &&
                 (<SuccessFail
                     isOnQuest={game.selectedPlayers.some((playerId) => playerId === clientPlayer.id)}
@@ -35,7 +48,8 @@ export default function GameScreen({ game }) {
                 />)
             }
             {
-                (game.phase === APP_CONSTANTS.GAME_PHASES.RESULT_APPROVE_REJECT) && (<ApproveRejectResult players={game.players} quest={game.quests[game.questNumber]} />)
+                (game.phase === APP_CONSTANTS.GAME_PHASES.RESULT_SUCCESS_FAIL) &&
+                (<SuccessFailResults successFailVotes={successFailVotes} />)
             }
             {game.players && (
                 <>
@@ -50,9 +64,23 @@ export default function GameScreen({ game }) {
                         players={game.players}
                         quests={game.quests}
                         numFailedVotes={game.failedVotes}
+                        questLeader={game.players[game.questLeaderIndex].name}
                     />
                 </>
             )}
+            {game.phase === APP_CONSTANTS.GAME_PHASES.ASSASSIN &&
+                (<AssassinPhase
+                    players={game.players}
+                    questLeaderIndex={game.questLeaderIndex}
+                    selectedPlayers={game.selectedPlayers}
+                    gamePhase={game.phase}
+                />)
+            }
+            {game.phase === APP_CONSTANTS.GAME_PHASES.WINNER_EXISTS &&
+                (
+                    <GameOver winner={game.winner} />
+                )
+            }
         </div>
     )
 }

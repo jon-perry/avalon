@@ -8,22 +8,25 @@ import CookieService from '../../../Util/CookieService';
 import Player from '../../Players/Player';
 const CLIENT_ACTION = require('../../../AppConstants');
 
-const ApproveRejectSelect = ({ questingPlayers, voteChoice, handleConfirm, handleClick }) => (
-    <>
-        <div className="questing-players">
-            {
-                questingPlayers.map((questingPlayer, index) => (
-                    <Player {...questingPlayer} key={index} />
-                ))
-            }
-        </div>
-        <div className="approve-reject">
-            <Approve orientation="front" onClick={() => handleClick('approve')} selected={voteChoice === 'approve'} />
-            <Reject orientation="front" onClick={() => handleClick('reject')} selected={voteChoice === 'reject'} />
-            <button disabled={!voteChoice} onClick={handleConfirm} className="confirm-vote-choice">Confirm Vote</button>
-        </div>
-    </>
-)
+const ApproveRejectSelect = ({ questingPlayers, voteChoice, handleConfirm, handleClick }) => {
+    // TODO: possibly handle highlighting actual quest leader
+    return (
+        <>
+            <div className="questing-players">
+                {
+                    questingPlayers.map((questingPlayer, index) => (
+                        <Player {...questingPlayer} id={null} questLeaderId={undefined} key={index} />
+                    ))
+                }
+            </div>
+            <div className="approve-reject">
+                <Approve orientation="front" onClick={() => handleClick('approve')} selected={voteChoice === 'approve'} />
+                <Reject orientation="front" onClick={() => handleClick('reject')} selected={voteChoice === 'reject'} />
+                <button disabled={!voteChoice} onClick={handleConfirm} className="confirm-vote-choice">Confirm Vote</button>
+            </div>
+        </>
+    )
+}
 
 export default function ApproveReject({ players, quest, selectedPlayers }) {
     const [voteChoice, setVoteChoice] = useState();
@@ -74,13 +77,3 @@ export default function ApproveReject({ players, quest, selectedPlayers }) {
         </Modal>
     )
 }
-
-{/* <div className="approve-reject">
-            <Approve orientation="front" onClick={() => handleClick('approve')} selected={voteChoice === 'approve'} />
-            <Reject orientation="front" onClick={() => handleClick('reject')} selected={voteChoice === 'reject'} />
-            {voteChoice &&
-                <div>
-                    <button onClick={() => handleConfirm()} className="confirm-vote-choice">Confirm Vote</button>
-                </div>
-            }
-        </div> */}

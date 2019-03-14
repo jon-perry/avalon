@@ -1,6 +1,6 @@
 class Quest {
     constructor(questParticipants, failsRequired) {
-        this.passFailed = undefined;
+        this.didPass = undefined;
         this.participants = [];
         this.approveRejectVotes = [[]];
         this.successFailVotes = [];
@@ -28,13 +28,32 @@ class Quest {
             participants: this.participants,
             approveRejectVotes: this.approveRejectVotes,
             numberOfParticipants: this.numberOfParticipants,
-            passFailed: this.passFailed,
+            didPass: this.didPass,
+            successFailVotes: this.successFailVotes,
         }
     }
 
-    addParticipants(participants) {
-        
+    shuffleResult() {
+        this.successFailVotes = this.Shuffle(this.successFailVotes);
     }
+
+    Shuffle(array) {
+        // taken from https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-tmpArray
+        let tmpArray = array.slice();
+        let currentIndex = tmpArray.length, temporaryValue, randomIndex;
+        // While there remain elements to shuffle...                                                         
+        while (0 !== currentIndex) {
+            // Pick a remaining element...                                                                   
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex -= 1;
+
+            // And swap it with the current element.                                                         
+            temporaryValue = tmpArray[currentIndex];
+            tmpArray[currentIndex] = tmpArray[randomIndex];
+            tmpArray[randomIndex] = temporaryValue;
+        }
+        return tmpArray;
+    };
 
 }
 

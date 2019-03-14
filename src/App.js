@@ -5,6 +5,7 @@ import LoginForm from './Lobby/LoginForm';
 import CookieService from './Util/CookieService';
 import './App.css';
 import './GamePieces/GameBoard/Votes/ApproveReject';
+import SuccessFailResults from './GamePieces/GameBoard/Votes/SuccessFailResults';
 const CLIENT_ACTION = require('./AppConstants');
 
 export const SocketContext = React.createContext(null);
@@ -21,6 +22,7 @@ export default function App() {
       <div className="App">
         {game ? (<GameScreen game={game} />) : !loggedIn ? (<LoginForm loggedIn={loggedIn} />) : (<LobbyScreen />)}
       </div>
+      {/* <SuccessFailResults results={['success','fail', 'success']}/> */}
     </SocketContext.Provider>
   );
 

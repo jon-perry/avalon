@@ -13,7 +13,7 @@ function Quests({ quests }) {
                         <QuestMarker
                             key={index}
                             questIndex={index}
-                            questPassed={quest.passFailed}
+                            questPassed={quest.didPass}
                             numberOfParticipants={quest.numberOfParticipants}
                             twoFailRequired={quest.twoFailRequired}
                         />

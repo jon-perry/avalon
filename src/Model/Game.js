@@ -15,6 +15,7 @@ class Game {
         this.selectedPlayers = [];
         this.failedVotes = 0;
         this.assignCharacters();
+        this.winner = undefined;
     }
 
     setPlayers(player) {
@@ -52,6 +53,7 @@ class Game {
             selectedPlayers: this.selectedPlayers,
             currentQuest: this.quests[this.questNumber],
             failedVotes: this.failedVotes,
+            winner: this.winner,
         }
     }
 
@@ -86,24 +88,24 @@ class Game {
     getSuccessFailResult() {
         const currentQuest = this.quests[this.questNumber];
         const failedVotes = currentQuest.successFailVotes.filter((vote) => vote === 'fail');
-        const failedRequirement= currentQuest.twoFailsRequired ? 2 : 1;
+        const failedRequirement = currentQuest.twoFailsRequired ? 2 : 1;
         return (failedVotes.length < failedRequirement);
     }
 
     setQuestPassed() {
         this.questLeaderIndex = (this.questLeaderIndex + 1) % this.players.length;
         this.phase = APP_CONSTANTS.GAME_PHASES.QUEST_PLAYER_SELECTION;
-        this.quests[this.questNumber].passFailed = true; 
+        this.quests[this.questNumber].didPass = true;
         this.selectedPlayers = [];
-        this.questNumber++;       
+        this.questNumber++;
     }
 
     setQuestFailed() {
         this.questLeaderIndex = (this.questLeaderIndex + 1) % this.players.length;
         this.phase = APP_CONSTANTS.GAME_PHASES.QUEST_PLAYER_SELECTION;
-        this.quests[this.questNumber].passFailed = false; 
+        this.quests[this.questNumber].didPass = false;
         this.selectedPlayers = [];
-        this.questNumber++;   
+        this.questNumber++;
     }
 
 
@@ -124,6 +126,27 @@ class Game {
         }
         return tmpArray;
     };
+
+    getWinner() {
+        const questFails = this.quests.map(quest => quest.didPass)
+            .filter(result => result === false);
+        const questSuccesses = this.quests.map(quest => quest.didPass)
+            .filter(result => result === true);
+        // .filter(result => result === 'success'));                                 
+        if (this.failedVotes === 5) {
+            return APP_CONSTANTS.WINNER.EVIL_VOTES
+        } else if (questFails.length === 3) {
+            return APP_CONSTANTS.WINNER.EVIL_QUESTS;
+        } else if (questSuccesses.length === 3) {
+            const gameCharacters = this.players.map(player => player.character);
+            if (gameCharacters.find(character => character === 'assassin')) {
+                return APP_CONSTANTS.WINNER.ASSASSIN_EXISTS
+            } else {
+                return APP_CONSTANTS.WINNER.GOOD
+            }
+        }
+        return undefined;
+    }
 
 
 }
