@@ -17,10 +17,10 @@ export default function ApproveRejectResult({ players, quest }) {
             <div className="approve-reject-result">
                 {
                     playerData.map((player, index) => (
-                        <React.Fragment key={index}>
+                        <div className="player-approve-reject" key={index}>
                             <Player {...player} />
                             {(player.voteChoice === 'approve') ? (<Approve orientation="front" />) : <Reject orientation="front" />}
-                        </React.Fragment>
+                        </div>
                     ))
 
                 }

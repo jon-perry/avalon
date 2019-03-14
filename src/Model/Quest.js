@@ -5,7 +5,7 @@ class Quest {
         this.approveRejectVotes = [[]];
         this.successFailVotes = [];
         this.numberOfParticipants = questParticipants;
-        this.failsRequired = failsRequired;
+        this.twoFailsRequired = failsRequired;
         this.questCounter = 0;
     }
 
@@ -18,11 +18,17 @@ class Quest {
         return currentRoundVotes.length === numberOfPlayers;
     }
 
+    addSuccessFailResult(choice) {
+        this.successFailVotes.push(choice);
+        return this.successFailVotes.length === this.numberOfParticipants;
+    }
+
     asSeenBy(_id) {
         return {
             participants: this.participants,
             approveRejectVotes: this.approveRejectVotes,
             numberOfParticipants: this.numberOfParticipants,
+            passFailed: this.passFailed,
         }
     }
 

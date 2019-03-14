@@ -82,33 +82,55 @@ io.on('connection', (client) => {
         const game = findGame(id);
         if (game) {
             game.phase = APP_CONSTANTS.GAME_PHASES.QUEST_PLAYER_APPROVAL;
-            game.emitGameStateToPlayers(io);
+            emitGameStateToPlayers(game);
         }
     });
 
     client.on(APP_CONSTANTS.SELECT_APPROVE_REJECT, ({ id, voteChoice }) => {
         const game = findGame(id);
         if (game) {
-
             const voteComplete = game.quests[game.questNumber].addApproveRejectResult(id, voteChoice, game.players.length);
             if (voteComplete) {
                 setTimeout(() => {
                     // TODO: hanldle moving onto next appropiate phase
-                    if (game.voteDidPass()) {
-                        game.votePassed();
+                    if (game.getVoteResult()) {
+                        game.setVotePassed();
                     } else {
-                        game.voteFailed();
+                        game.setVoteFailed();
                     }
-                    game.emitGameStateToPlayers(io);
+                    emitGameStateToPlayers(game);
 
                 }, 750);
                 game.phase = APP_CONSTANTS.GAME_PHASES.RESULT_APPROVE_REJECT;
             }
-            game.emitGameStateToPlayers(io);
+            emitGameStateToPlayers(game);
         }
     });
 
+    client.on(APP_CONSTANTS.CONFIRM_SUCCESS_FAIL, ({ id, choice }) => {
+        const game = findGame(id);
+        if (game) {
+            const currentQuest = game.quests[game.questNumber]
+            const successFailComplete = currentQuest.addSuccessFailResult(choice);
+            if (successFailComplete) {
+                const questPassed = game.getSuccessFailResult();
+                console.log(questPassed);
+                if (questPassed) {
+                    game.setQuestPassed();
+                } else {
+                    game.setQuestFailed();
+                }
+                emitGameStateToPlayers(game);
+            }
+        }
+    });
 });
+
+const emitGameStateToPlayers = (game) => {
+    game.players.forEach((player) => io.to(player.clientId).emit(APP_CONSTANTS.SET_GAME, game.asSeenBy(player.id)));
+}
+
+
 
 const port = 8888;
 io.listen(port);

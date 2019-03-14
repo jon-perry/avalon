@@ -5,7 +5,7 @@
     overflow: hidden;
     border-radius: 5px;
     &.selected {
-        border: 5px solid black;
+        // border: 5px solid black;
         img {
             content: url("../../pictures//tokens//team-token.png");
         }
@@ -31,5 +31,9 @@
     }
     img {
         width: 100%;
+    }
+
+    &.quest-leader {
+        border: 3px dashed gold;
     }
 }

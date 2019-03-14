@@ -5,7 +5,6 @@ const Quest = require('../Model/Quest');
 const APP_CONSTANTS = require('../AppConstants');
 
 class Game {
-
     constructor(players) {
         this.players = players;
         this.quests = this.getQuestInfo();
@@ -64,29 +63,49 @@ class Game {
         return quests;
     }
 
-    voteDidPass() {
+    getVoteResult() {
         const currentRoundVotes = this.quests[this.questNumber].approveRejectVotes[this.quests[this.questNumber].approveRejectVotes.length - 1];
         const rejectVotes = currentRoundVotes.filter(({ voteChoice, id }) => voteChoice === 'reject');
         return rejectVotes < Math.ceil(this.players.length / 2);
     }
 
-    votePassed() {
+    setVotePassed() {
         this.phase = APP_CONSTANTS.GAME_PHASES.QUEST;
     }
 
-    voteFailed() {
+    setVoteFailed() {
         this.failedVotes += 1;
         this.questLeaderIndex = (this.questLeaderIndex + 1) % this.players.length;
-        this.phase = APP_CONSTANTS.GAME_PHASES.QUEST_PLAYER_SELECTION
-        this.quests[this.questNumber].questCounter++;
-        this.quests[this.questNumber].approveRejectVotes.push([]);
+        this.phase = APP_CONSTANTS.GAME_PHASES.QUEST_PLAYER_SELECTION;
+        const currentQuest = this.quests[this.questNumber];
+        currentQuest.questCounter++;
+        currentQuest.approveRejectVotes.push([]);
         this.selectedPlayers = [];
-
     }
 
-    emitGameStateToPlayers(io) {
-        this.players.forEach((player) => io.to(player.clientId).emit(APP_CONSTANTS.SET_GAME, this.asSeenBy(player.id)));
+    getSuccessFailResult() {
+        const currentQuest = this.quests[this.questNumber];
+        const failedVotes = currentQuest.successFailVotes.filter((vote) => vote === 'fail');
+        const failedRequirement= currentQuest.twoFailsRequired ? 2 : 1;
+        return (failedVotes.length < failedRequirement);
     }
+
+    setQuestPassed() {
+        this.questLeaderIndex = (this.questLeaderIndex + 1) % this.players.length;
+        this.phase = APP_CONSTANTS.GAME_PHASES.QUEST_PLAYER_SELECTION;
+        this.quests[this.questNumber].passFailed = true; 
+        this.selectedPlayers = [];
+        this.questNumber++;       
+    }
+
+    setQuestFailed() {
+        this.questLeaderIndex = (this.questLeaderIndex + 1) % this.players.length;
+        this.phase = APP_CONSTANTS.GAME_PHASES.QUEST_PLAYER_SELECTION;
+        this.quests[this.questNumber].passFailed = false; 
+        this.selectedPlayers = [];
+        this.questNumber++;   
+    }
+
 
     static Shuffle(array) {
         // taken from https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-tmpArray

@@ -14,12 +14,9 @@ const APP_CONSTANTS = require('./AppConstants');
 
 export default function GameScreen({ game }) {
     const clientPlayer = CookieService.GetPlayer();
-    console.log(game.selectedPlayers);
-    console.log(clientPlayer.id);
-    console.log(game.selectedPlayers.some((playerId) => playerId === clientPlayer.id));
-    console.log(game.players.find((player) => player.id === clientPlayer.id).alignment === 'good')
-    return (
+    const isClientGood = game.players.find((player) => player.id === clientPlayer.id).alignment === 'good';
 
+    return (
         <div className="game-screen">
             {
                 (game.phase === APP_CONSTANTS.GAME_PHASES.QUEST_PLAYER_APPROVAL) &&
@@ -34,7 +31,7 @@ export default function GameScreen({ game }) {
                 (game.phase === APP_CONSTANTS.GAME_PHASES.QUEST) &&
                 (<SuccessFail
                     isOnQuest={game.selectedPlayers.some((playerId) => playerId === clientPlayer.id)}
-                    isGood={game.players.find((player) => player.id === clientPlayer.id).alignment === 'good'}
+                    isGood={isClientGood}
                 />)
             }
             {

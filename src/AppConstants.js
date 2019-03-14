@@ -21,6 +21,8 @@ module.exports = {
         CONFIRM_SELECTED_PLAYERS: 'confirmSelectedPlayers',
         SET_GAME_PHASE: 'setGamePhase',
         SELECT_APPROVE_REJECT: 'selectApproveReject',
+        CONFIRM_SUCCESS_FAIL: 'confirmSucessFail',
+
 
         /* Game Phases */
         GAME_PHASES: {

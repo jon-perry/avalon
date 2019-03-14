@@ -4,7 +4,8 @@ const questPass = require('../../../pictures/tokens/quest-pass(level-balance).pn
 const questFail = require('../../../pictures/tokens/quest-fail(level-balance).png');
 
 const QuestMarker = ({ questIndex, questPassed, numberOfParticipants, twoFailRequired }) => {
-    const questImage = questPassed !== undefined ? (questPassed ? questPass : questFail) : undefined;
+    const questImage = questPassed !== undefined ?
+                                                    (questPassed ? questPass : questFail) : undefined;
     return (
         <div className="quest-marker">
             {questImage && (<img className="quest-result" src={questImage} alt={`Quest ${questPassed ? 'Passed' : 'Failed'}`} />)}
