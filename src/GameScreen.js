@@ -19,7 +19,7 @@ export default function GameScreen({ game }) {
     const clientPlayer = CookieService.GetPlayer();
     const isClientGood = game.players.find((player) => player.id === clientPlayer.id).alignment === 'good';
 
-    // TODO: Fix this so that game does not crash after handling last quest success/fail
+    // TODO: Handle endgame screen (this let's us see the end game sceeen without crashing);
     if (game.questNumber === 5) {
         game.questNumber -= 1;
         game.currentQuest = game.quests[game.questNumber];

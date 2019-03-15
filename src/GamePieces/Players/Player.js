@@ -66,8 +66,7 @@ export default function Player({ gamePhase, name, id, character, alignment, sele
                     className="confirm-quest-players"
                     onClick={() => handleConfirmSelection()}
                     disabled={(selectedPlayers.length !== numberOfParticipants) ||
-                        ((gamePhase !== APP_CONSTANTS.GAME_PHASES.QUEST_PLAYER_SELECTION) &&
-                            (gamePhase !== APP_CONSTANTS.GAME_PHASES.ASSASSIN))}
+                        ((gamePhase !== APP_CONSTANTS.GAME_PHASES.QUEST_PLAYER_SELECTION) && (gamePhase !== APP_CONSTANTS.GAME_PHASES.ASSASSIN))}
                 >
                     Confirm
                 </button>
