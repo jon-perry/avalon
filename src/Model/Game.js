@@ -34,7 +34,7 @@ class Game {
 
     assignCharacters() {
         const GAME_VARIANTS = CHARACTER_GAME_VARIANTS[this.players.length];
-        const randomVariant = 0; // Math.floor(Math.random() * GAME_VARIANTS.length);
+        const randomVariant = Math.floor(Math.random() * GAME_VARIANTS.length);
         const gameVariant = Game.Shuffle(GAME_VARIANTS[randomVariant]);
         this.players.forEach((player, index) => {
             player.character = gameVariant[index]
