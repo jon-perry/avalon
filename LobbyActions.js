@@ -1,3 +1,4 @@
+const Lobby = require('./src/Model/Lobby');
 const CLIENT_ACTION = require('./src/AppConstants');
 
 configureLobbyActions = ({ io, client, findPlayer, findLobby, lobbies }) => {
@@ -5,6 +6,17 @@ configureLobbyActions = ({ io, client, findPlayer, findLobby, lobbies }) => {
     const emitLobbySync = () => {
         io.emit(CLIENT_ACTION.SET_LOBBIES, lobbies.filter((lobby) => !lobby.started).map((lobby) => lobby.getLobbyData()));
     }
+
+    client.on('RESET', ({ }) => {
+        lobbies.forEach((lobby) => {
+            lobby.players.forEach(player => {
+                io.to(`${player.clientId}`).emit('setGame', undefined);
+            });
+        })
+        lobbies.splice(0);
+        lobbies.push(new Lobby());
+        emitLobbySync();
+    });
 
     client.on(CLIENT_ACTION.GET_LOBBIES, () => {
         client.emit(CLIENT_ACTION.SET_LOBBIES, lobbies.filter((lobby) => !lobby.started).map((lobby) => lobby.getLobbyData()));

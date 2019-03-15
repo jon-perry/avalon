@@ -36,11 +36,12 @@ export default function ({ id, players, leader }) {
 
                     return (
                         <div className="player" key={player.id}>
-                            <span className="player-name">{player.id === leader.id ? '♔ ' : ' '}{player.name}</span>
+                            {(player.id === leader.id) && (<span className="lobby-leader">♔</span>)}
+                            <span className="player-name">{player.name}</span>
                             {
                                 activePlayer.id === player.id ?
-                                    (<input type="checkbox" name="isReady" value={isChecked} onChange={handleCheckChange} />) :
-                                    (<span className="readiness">{player.ready ? '☑' : '☐'}</span>)
+                                    (<input className="readiness" type="checkbox" name="isReady" value={isChecked} onChange={handleCheckChange} />) :
+                                    (<span className="readiness">Ready: {player.ready ? '☑' : '☐'}</span>)
                             }
                         </div>)
                 })

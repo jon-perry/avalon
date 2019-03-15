@@ -34,7 +34,7 @@ class Game {
 
     assignCharacters() {
         const GAME_VARIANTS = CHARACTER_GAME_VARIANTS[this.players.length];
-        const randomVariant = Math.floor(Math.random() * GAME_VARIANTS.length);
+        const randomVariant = 0; // Math.floor(Math.random() * GAME_VARIANTS.length);
         const gameVariant = Game.Shuffle(GAME_VARIANTS[randomVariant]);
         this.players.forEach((player, index) => {
             player.character = gameVariant[index]
@@ -67,8 +67,8 @@ class Game {
 
     getVoteResult() {
         const currentRoundVotes = this.quests[this.questNumber].approveRejectVotes[this.quests[this.questNumber].approveRejectVotes.length - 1];
-        const rejectVotes = currentRoundVotes.filter(({ voteChoice, id }) => voteChoice === 'reject');
-        return rejectVotes < Math.ceil(this.players.length / 2);
+        const rejectVotes = currentRoundVotes.filter(({ voteChoice }) => voteChoice === 'reject');
+        return rejectVotes.length < Math.ceil(this.players.length / 2);
     }
 
     setVotePassed() {
@@ -137,7 +137,7 @@ class Game {
             return APP_CONSTANTS.WINNER.EVIL_VOTES
         } else if (questFails.length === 3) {
             return APP_CONSTANTS.WINNER.EVIL_QUESTS;
-        } else if (questSuccesses.length === 1) {
+        } else if (questSuccesses.length === 3) {
             const gameCharacters = this.players.map(player => player.character);
             if (gameCharacters.find(character => character === 'assassin')) {
                 return APP_CONSTANTS.WINNER.ASSASSIN_EXISTS

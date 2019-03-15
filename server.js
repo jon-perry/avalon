@@ -8,6 +8,7 @@ const APP_CONSTANTS = require('./src/AppConstants');
 
 const lobbies = [new Lobby()];
 const players = [];
+const TIME_OUT = 2000;
 
 const findPlayer = (nameOrId) => {
     return players.find((player) => (
@@ -102,7 +103,7 @@ io.on('connection', (client) => {
                     handlePossibleWinner(game);
                     emitGameStateToPlayers(game);
 
-                }, 200);
+                }, TIME_OUT);
                 game.phase = APP_CONSTANTS.GAME_PHASES.RESULT_APPROVE_REJECT;
             }
             emitGameStateToPlayers(game);
@@ -124,7 +125,7 @@ io.on('connection', (client) => {
                     }
                     handlePossibleWinner(game);
                     emitGameStateToPlayers(game);
-                }, 200);
+                }, TIME_OUT);
                 game.phase = APP_CONSTANTS.GAME_PHASES.RESULT_SUCCESS_FAIL;
                 currentQuest.shuffleResult();
                 emitGameStateToPlayers(game);

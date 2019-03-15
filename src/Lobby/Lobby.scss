@@ -1,5 +1,24 @@
 .lobby {
     display: inline-flex;
     flex-direction: column;
-    
+    .player {
+        display: grid;
+        width: 230px;
+        grid-template-columns: 20px 1fr 70px;
+        .lobby-leader {
+            grid-column: 1 / span 1;
+        }
+        .player-name {
+            text-align: left;
+            grid-column: 2 / span 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .readiness {
+            white-space: nowrap;
+            text-align: right;
+            align-content: flex-end;
+        }
+    }
 }

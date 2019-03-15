@@ -10,15 +10,26 @@ const CLIENT_ACTION = require('./AppConstants');
 
 export const SocketContext = React.createContext(null);
 
+const ResetButton = ({onClick}) => (
+  <div className="reset-button">
+    <button onClick={onClick}>Reset</button>
+  </div>
+)
+
 const io = require('socket.io-client');
-const socket = io.connect('localhost:8888');
+const socket = io.connect('alexteno.homeip.net:8888');
 console.log(socket.connected)
 export default function App() {
   const loggedIn = useLoggedIn();
   const game = useGame();
 
+  const handleReset = () => {
+    socket.emit('RESET', {});
+  }
+
   return (
     <SocketContext.Provider value={socket}>
+      <ResetButton onClick={handleReset}/>
       <div className="App">
         {game ? (<GameScreen game={game} />) : !loggedIn ? (<LoginForm loggedIn={loggedIn} />) : (<LobbyScreen />)}
       </div>
