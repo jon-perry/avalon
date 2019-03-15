@@ -94,7 +94,6 @@ io.on('connection', (client) => {
             const voteComplete = game.quests[game.questNumber].addApproveRejectResult(id, voteChoice, game.players.length);
             if (voteComplete) {
                 setTimeout(() => {
-                    // TODO: hanldle moving onto next appropiate phase
                     if (game.getVoteResult()) {
                         game.setVotePassed();
                     } else {
