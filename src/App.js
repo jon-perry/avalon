@@ -12,7 +12,7 @@ export const SocketContext = React.createContext(null);
 
 const io = require('socket.io-client');
 const socket = io.connect('localhost:8888');
-
+console.log(socket.connected)
 export default function App() {
   const loggedIn = useLoggedIn();
   const game = useGame();

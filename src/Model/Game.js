@@ -137,7 +137,7 @@ class Game {
             return APP_CONSTANTS.WINNER.EVIL_VOTES
         } else if (questFails.length === 3) {
             return APP_CONSTANTS.WINNER.EVIL_QUESTS;
-        } else if (questSuccesses.length === 3) {
+        } else if (questSuccesses.length === 1) {
             const gameCharacters = this.players.map(player => player.character);
             if (gameCharacters.find(character => character === 'assassin')) {
                 return APP_CONSTANTS.WINNER.ASSASSIN_EXISTS
