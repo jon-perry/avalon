@@ -1,6 +1,6 @@
 const APP_CONSTANTS = require('./src/AppConstants');
 const Game = require('./src/Model/Game');
-const TIME_OUT = 50;
+const TIME_OUT = 3000;
 
 
 
