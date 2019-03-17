@@ -1,10 +1,10 @@
 const Lobby = require('./src/Model/Lobby');
-const CLIENT_ACTION = require('./src/AppConstants');
+const APP_CONSTANTS = require('./src/AppConstants');
 
 configureLobbyActions = ({ io, client, findPlayer, findLobby, lobbies }) => {
 
     const emitLobbySync = () => {
-        io.emit(CLIENT_ACTION.SET_LOBBIES, lobbies.filter((lobby) => !lobby.started).map((lobby) => lobby.getLobbyData()));
+        io.emit(APP_CONSTANTS.SET_LOBBIES, lobbies.filter((lobby) => !lobby.started).map((lobby) => lobby.getLobbyData()));
     }
 
     client.on('RESET', ({ }) => {
@@ -18,21 +18,21 @@ configureLobbyActions = ({ io, client, findPlayer, findLobby, lobbies }) => {
         emitLobbySync();
     });
 
-    client.on(CLIENT_ACTION.GET_LOBBIES, () => {
-        client.emit(CLIENT_ACTION.SET_LOBBIES, lobbies.filter((lobby) => !lobby.started).map((lobby) => lobby.getLobbyData()));
+    client.on(APP_CONSTANTS.GET_LOBBIES, () => {
+        client.emit(APP_CONSTANTS.SET_LOBBIES, lobbies.filter((lobby) => !lobby.started).map((lobby) => lobby.getLobbyData()));
     });
 
-    client.on(CLIENT_ACTION.JOIN_LOBBY, ({ id }) => {
+    client.on(APP_CONSTANTS.JOIN_LOBBY, ({ id }) => {
         const currentPlayer = findPlayer(client.id);
         const lobby = findLobby(id);
         if (currentPlayer && lobby) {
             lobby.addPlayer(currentPlayer)
-            client.emit(CLIENT_ACTION.JOINED_LOBBY, lobby);
+            client.emit(APP_CONSTANTS.JOINED_LOBBY, lobby);
             emitLobbySync();
         }
     });
 
-    client.on(CLIENT_ACTION.IS_READY_CHANGE, ({ id, ready }) => {
+    client.on(APP_CONSTANTS.IS_READY_CHANGE, ({ id, ready }) => {
         const lobby = findLobby(id);
         if (lobby) {
             const player = lobby.findPlayer(client.id);
@@ -42,7 +42,6 @@ configureLobbyActions = ({ io, client, findPlayer, findLobby, lobbies }) => {
             }
         }
     });
-
-}
+};
 
 module.exports = configureLobbyActions;
