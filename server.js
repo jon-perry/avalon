@@ -182,6 +182,7 @@ const handlePossibleWinner = (game) => {
     const winner = game.getWinner();
     if (winner) {
         if (winner !== APP_CONSTANTS.WINNER.ASSASSIN_EXISTS) {
+            game.selectedPlayers = [];
             game.phase = APP_CONSTANTS.GAME_PHASES.WINNER_EXISTS;
             game.winner = winner;
         } else {
