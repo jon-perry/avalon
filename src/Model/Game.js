@@ -44,10 +44,11 @@ class Game {
 
     asSeenBy(id) {
         const viewingPlayer = this.players.find((player) => player.id === id);
+        const players = this.phase === APP_CONSTANTS.GAME_PHASES.WINNER_EXISTS ? this.players : this.players.map((player) => player.asSeenBy(viewingPlayer));
         return {
             quests: this.quests.map((quest) => quest.asSeenBy(id)),
             phase: this.phase,
-            players: this.players.map((player) => player.asSeenBy(viewingPlayer)),
+            players: players,
             questLeaderIndex: this.questLeaderIndex,
             questNumber: this.questNumber,
             selectedPlayers: this.selectedPlayers,
@@ -92,18 +93,10 @@ class Game {
         return (failedVotes.length < failedRequirement);
     }
 
-    setQuestPassed() {
+    setQuestPassed(didPass) {
         this.questLeaderIndex = (this.questLeaderIndex + 1) % this.players.length;
         this.phase = APP_CONSTANTS.GAME_PHASES.QUEST_PLAYER_SELECTION;
-        this.quests[this.questNumber].didPass = true;
-        this.selectedPlayers = [];
-        this.questNumber++;
-    }
-
-    setQuestFailed() {
-        this.questLeaderIndex = (this.questLeaderIndex + 1) % this.players.length;
-        this.phase = APP_CONSTANTS.GAME_PHASES.QUEST_PLAYER_SELECTION;
-        this.quests[this.questNumber].didPass = false;
+        this.quests[this.questNumber].didPass = didPass;
         this.selectedPlayers = [];
         this.questNumber++;
     }
@@ -129,17 +122,17 @@ class Game {
 
     getWinner() {
         const questFails = this.quests.map(quest => quest.didPass)
-            .filter(result => result === false);
+                                      .filter(result => result === false);
         const questSuccesses = this.quests.map(quest => quest.didPass)
-            .filter(result => result === true);
-        // .filter(result => result === 'success'));                                 
+                                          .filter(result => result === true);
         if (this.failedVotes === 5) {
             return APP_CONSTANTS.WINNER.EVIL_VOTES
         } else if (questFails.length === 3) {
             return APP_CONSTANTS.WINNER.EVIL_QUESTS;
         } else if (questSuccesses.length === 3) {
-            const gameCharacters = this.players.map(player => player.character);
-            if (gameCharacters.find(character => character === 'assassin')) {
+            const assassin = this.players.map(player => player.character)
+                                         .find(character => character === 'assassin');
+            if (assassin) {
                 return APP_CONSTANTS.WINNER.ASSASSIN_EXISTS
             } else {
                 return APP_CONSTANTS.WINNER.GOOD

@@ -63,7 +63,7 @@ export default function ApproveReject({ players, quest, selectedPlayers }) {
     }; // TODO: Fix me up
 
     return (
-        <Modal isOpen={true} style={customStyles}>
+        <Modal ariaHideApp={false} isOpen={true} style={customStyles}>
             {
                 (!clientHasVoted) ? (
                     <ApproveRejectSelect

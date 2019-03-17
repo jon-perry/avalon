@@ -20,7 +20,7 @@ export default function ({ players, gamePhase, selectedPlayers = [], questLeader
                                                             (player.character === 'assassin') || 
                                                             (player.id === activePlayer.id)));
     return (
-        <Modal isOpen={true} style={customStyles}>
+        <Modal ariaHideApp={false} isOpen={true} style={customStyles}>
             <div className="assassin-targets">
                 {
                     playersToSelectFrom.map((player, index) =>

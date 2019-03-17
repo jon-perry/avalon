@@ -42,7 +42,7 @@ export default function ({ isOnQuest, isGood }) {
   return (
     isOnQuest &&
     (
-      <Modal isOpen={true} style={customStyles}>
+      <Modal ariaHideApp={false} isOpen={true} style={customStyles}>
         {
           (!hasChosen) ?
             <div className="success-fail-vote">

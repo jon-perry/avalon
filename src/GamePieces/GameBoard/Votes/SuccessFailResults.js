@@ -17,7 +17,7 @@ export default function ({ successFailVotes }) {
     };
 
     return (
-        <Modal isOpen={true} style={customStyles}>
+        <Modal ariaHideApp={false} isOpen={true} style={customStyles}>
             <div className="success-fail-results">
                 {successFailVotes.map((result, index) => (
                     result === 'success' ?

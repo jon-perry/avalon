@@ -5,22 +5,23 @@ import LoginForm from './Lobby/LoginForm';
 import CookieService from './Util/CookieService';
 import './App.css';
 import './GamePieces/GameBoard/Votes/ApproveReject';
-const CLIENT_ACTION = require('./AppConstants');
+const APP_CONSTANTS = require('./AppConstants');
 
 export const SocketContext = React.createContext(null);
 
-const ResetButton = ({onClick}) => (
+const ResetButton = ({ onClick }) => (
   <div className="reset-button">
     <button onClick={onClick}>Reset</button>
   </div>
 )
 
 const io = require('socket.io-client');
-const socket = io.connect('alexteno.homeip.net:8888');
-console.log(socket.connected)
+const socket = io.connect('localhost:8888');
+
 export default function App() {
   const loggedIn = useLoggedIn();
   const game = useGame();
+  const error = useError();
 
   const handleReset = () => {
     socket.emit('RESET', {});
@@ -28,9 +29,9 @@ export default function App() {
 
   return (
     <SocketContext.Provider value={socket}>
-      <ResetButton onClick={handleReset}/>
+      <ResetButton onClick={handleReset} />
       <div className="App">
-        {game ? (<GameScreen game={game} />) : !loggedIn ? (<LoginForm loggedIn={loggedIn} />) : (<LobbyScreen />)}
+        {game ? (<GameScreen game={game} />) : !loggedIn ? (<LoginForm loggedIn={loggedIn} error={error} />) : (<LobbyScreen />)}
       </div>
     </SocketContext.Provider>
   );
@@ -49,15 +50,15 @@ const useLoggedIn = () => {
       }
       setLoggedIn(loggedIn);
     };
-    socket.on(CLIENT_ACTION.LOGGED_IN, handleLoggedIn);
+    socket.on(APP_CONSTANTS.LOGGED_IN, handleLoggedIn);
 
     /* Check for existing login */
     const player = CookieService.GetPlayer();
     if (!loggedIn) {
-      socket.emit(CLIENT_ACTION.CHECK_LOGGED_IN, { uuid: player.id });
+      socket.emit(APP_CONSTANTS.CHECK_LOGGED_IN, { uuid: player.id });
     }
 
-    return () => socket.removeListener(CLIENT_ACTION.LOGGED_IN, handleLoggedIn);
+    return () => socket.removeListener(APP_CONSTANTS.LOGGED_IN, handleLoggedIn);
   }, [loggedIn]);
 
   return loggedIn;
@@ -75,12 +76,31 @@ const useGame = () => {
     /* Check for existing game */
     const player = CookieService.GetPlayer();
     if (!game) {
-      socket.emit(CLIENT_ACTION.GET_GAME, { playerId: player.id })
+      socket.emit(APP_CONSTANTS.GET_GAME, { playerId: player.id })
     }
 
-    socket.on(CLIENT_ACTION.SET_GAME, handleSetGame);
-    return () => socket.removeListener(CLIENT_ACTION.SET_GAME, handleSetGame);
+    socket.on(APP_CONSTANTS.SET_GAME, handleSetGame);
+    return () => socket.removeListener(APP_CONSTANTS.SET_GAME, handleSetGame);
 
   }, [game]);
   return game;
+}
+
+const useError = () => {
+  const [error, setError] = useState('');
+
+
+  useEffect(() => {
+    const handleError = ({ error }) => {
+      console.log('error received');
+      console.log(error);
+      setError(error);
+    };
+
+    socket.on(APP_CONSTANTS.ERROR, handleError);
+
+
+    return () => socket.removeEventListener(APP_CONSTANTS.ERROR, handleError);
+  }, [error])
+  return error;
 }

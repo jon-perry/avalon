@@ -12,6 +12,7 @@ module.exports = {
         LOGIN: 'login',
         LOGGED_IN: 'loggedIn',
         CHECK_LOGGED_IN: 'checkLoggedIn',
+        CREATE_USER: 'createUser',
 
         /* Game Actions */
         GAME_START: 'gameStart',
@@ -48,19 +49,9 @@ module.exports = {
                 ASSASSIN_KILL: 'Assassin killed merlin!',
         },
 
-        // AUTHORIZE: 'authorize',
-        // CONFIRM_SELECTED_PLAYERS: 'confirmSelectedPlayers',
-        // FAILED_TEAM_VOTE: 'failedTeamVote',
-        // GAME_PLAYERS: 'gamePlayers',
-        // GAME_STARTED: 'gameStarted',
-        // GET_QUEST_LEADER: 'getQuestLeader',
-        // IS_AUTHORIZED: 'isAuthorized',
-        // IS_QUEST_LEADER: 'isQuestLeader',
-        // NUM_QUEST_PARTICIPANTS: 'numQuestParticipants',
-        // PLAYER_SELECT: 'playerSelect',
-        // QUEST_LEADER_CHANGED: 'questLeaderChanged',
-        // QUEST_RESULT: 'questResult',
-        // SHOW_QUEST_PHASE: 'showQuestPhase',
-        // SHOW_VOTE_PHASE: 'showVotePhase',
-        // SUCCESS_FAIL_CONFIRMED: 'successFailConfirmed',
+        ERROR: 'errorOccurred',
+        ERRORS: {
+                NAME_TAKEN: 'Username taken',
+                WRONG_CREDENTIALS: 'Wrong Credentials',
+        }
 }

@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './GameBoard.scss';
 import Votes from './Votes/Votes.js';
 import Quests from './Quests/Quests';
-import VoteResults from './Votes/VoteResults';
 
 const Details = ({ playerCount, questLeader }) => {
     const combinations = {
@@ -28,7 +27,6 @@ const Details = ({ playerCount, questLeader }) => {
 }
 
 export default function GameBoard({ players, quests, questLeader, numFailedVotes }) {
-    const [showVotes, setShowVotes] = useState(false);
     const source = require('../../pictures/game-boards/custom-variant.jpg')
     const style = {
         backgroundImage: `url(${source})`,
@@ -41,8 +39,6 @@ export default function GameBoard({ players, quests, questLeader, numFailedVotes
             <Quests quests={quests} playerCount={players.length} />
             <Votes numFailedVotes={numFailedVotes}/>
             <Details playerCount={players.length} questLeader={questLeader} />
-            <button className="details" onClick={() => setShowVotes(!showVotes)}>{!showVotes ? 'Show Votes' : 'Hide Votes'}</button>
-
         </div>
     );
 }

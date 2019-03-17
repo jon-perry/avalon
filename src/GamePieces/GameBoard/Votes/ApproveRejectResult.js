@@ -24,7 +24,7 @@ export default function ApproveRejectResult({ players, quest }) {
     };
 
     return (
-        <Modal isOpen={true} style={customStyles}>
+        <Modal ariaHideApp={false} isOpen={true} style={customStyles}>
             <div className="approve-reject-result">
                 {
                     playerData.map((player, index) => (

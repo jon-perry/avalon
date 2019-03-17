@@ -1,25 +1,52 @@
 import React, { useState, useContext } from 'react';
 import { SocketContext } from '../App';
 import './LoginForm.scss';
-const CLIENT_ACTION = require('../AppConstants');
+const APP_CONSTANTS = require('../AppConstants');
 
-function LoginForm({ loggedIn }) {
+function LoginForm({ loggedIn, error }) {
     const socket = useContext(SocketContext);
     const [name, nameInputProps] = useTextInput('name');
-    const [password, passwordInputProps] = useTextInput('password')
-    
+    const [password, passwordInputProps] = useTextInput('password (stored in plain-text)')
+    const [reEnteredPassword, reEnteredPasswordInputProps] = useTextInput('re-enter password')
+    const [showRegister, setShowRegister] = useState(false);
+    const [clientError, setClientError] = useState('');
+
     const submit = (event) => {
         event.preventDefault();
-        socket.emit(CLIENT_ACTION.LOGIN, { name, password });
+        if (!showRegister) {
+            if (name === '') {
+                setClientError('Enter username');
+                return;
+            } else if (password === '') {
+                setClientError('Enter password');
+                return;
+            } else {
+                setClientError('');
+            }
+            socket.emit(APP_CONSTANTS.LOGIN, { name, password });
+        } else {
+            if (password !== reEnteredPassword) {
+                setClientError('Passwords do not match');
+            } else {
+                setClientError('');
+                socket.emit(APP_CONSTANTS.CREATE_USER, { name, password })
+            }
+        }
     }
 
     return loggedIn === undefined ? (<div>Loading...</div>) : (
         <form className="login-form" onSubmit={submit}>
+            <div className="error" hidden={!(error || clientError)}>{clientError ? clientError : error}</div>
             <input type="text" {...nameInputProps} />
             <input type="password" {...passwordInputProps} />
+            {
+                showRegister && (
+                    <input type="password" {...reEnteredPasswordInputProps} />
+                )
+            }
             <div className="login-controls">
                 <button type="submit">Submit</button>
-                <button onClick={() => alert('Not yet implemented')}>Register</button> {/* TODO: Implement user creation page */}
+                <button type="button" onClick={() => setShowRegister(!showRegister)}>{!showRegister ? 'Register' : 'Login'}</button> {/* TODO: Implement user creation page */}
             </div>
         </form>
     )

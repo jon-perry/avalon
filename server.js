@@ -3,8 +3,11 @@ const Game = require('./src/Model/Game');
 const Lobby = require('./src/Model/Lobby');
 const Player = require('./src/Model/Player');
 const configureLobbyActions = require('./LobbyActions');
-
+const DatabaseHelper = require('./src/Util/DatabaseHelper');
+const MongoClient = require('mongodb').MongoClient;
 const APP_CONSTANTS = require('./src/AppConstants');
+
+let databaseHelper = new DatabaseHelper(MongoClient);
 
 const lobbies = [new Lobby()];
 const players = [];
@@ -28,15 +31,28 @@ const findGame = (playerId) => {
 }
 
 io.on('connection', (client) => {
+    client.on(APP_CONSTANTS.CREATE_USER, async ({ name, password }) => {
+        const user = await databaseHelper.getUser(name.toLowerCase());
+        if (!user) {
+            await databaseHelper.createUser(name.toLowerCase(), password);
+            const currentPlayer = new Player(name);
+            currentPlayer.setClientId(client.id);
+            players.push(currentPlayer)
+            client.emit(APP_CONSTANTS.LOGGED_IN, currentPlayer.getPlayerData());
+        } else {
+            client.emit(APP_CONSTANTS.ERROR, { error: APP_CONSTANTS.ERRORS.NAME_TAKEN });
+        }
+    });
 
-    client.on(APP_CONSTANTS.LOGIN, ({ name }) => { // TODO: Store password
-        const currentPlayer = findPlayer(name) || new Player(name); // Move new player to Registration
-        players.push(currentPlayer);
-        if (currentPlayer) {
+    client.on(APP_CONSTANTS.LOGIN, async ({ name, password }) => { // TODO: Store password
+        const verified = await databaseHelper.verifyCredentials(name.toLowerCase(), password);
+        const currentPlayer = findPlayer(name) || new Player(name);
+        if (verified) {
+            players.push(currentPlayer);
             currentPlayer.setClientId(client.id);
             client.emit(APP_CONSTANTS.LOGGED_IN, currentPlayer.getPlayerData());
         } else {
-            // TODO: Error: No user exists
+            client.emit(APP_CONSTANTS.ERROR, { error: APP_CONSTANTS.ERRORS.WRONG_CREDENTIALS });
         }
     });
 
@@ -118,9 +134,9 @@ io.on('connection', (client) => {
                 setTimeout(() => {
                     const questPassed = game.getSuccessFailResult();
                     if (questPassed) {
-                        game.setQuestPassed();
+                        game.setQuestPassed(true);
                     } else {
-                        game.setQuestFailed();
+                        game.setQuestPassed(false);
                     }
                     handlePossibleWinner(game);
                     emitGameStateToPlayers(game);
@@ -145,9 +161,11 @@ io.on('connection', (client) => {
         if (game) {
             const selectedPlayer = game.players.find((player) => player.id === game.selectedPlayers[0]);
             if (selectedPlayer.character === 'merlin') {
+                game.selectedPlayers = [];
                 game.winner = APP_CONSTANTS.WINNER.ASSASSIN_KILL;
                 game.phase = APP_CONSTANTS.GAME_PHASES.WINNER_EXISTS;
             } else {
+                game.selectedPlayers = [];
                 game.winner = APP_CONSTANTS.WINNER.GOOD;
                 game.phase = APP_CONSTANTS.GAME_PHASES.WINNER_EXISTS;
             }
