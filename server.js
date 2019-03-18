@@ -7,7 +7,7 @@ const DatabaseHelper = require('./src/Util/DatabaseHelper');
 const MongoClient = require('mongodb').MongoClient;
 const APP_CONSTANTS = require('./src/AppConstants');
 
-let databaseHelper = new DatabaseHelper(MongoClient);
+const databaseHelper = new DatabaseHelper(MongoClient);
 
 const lobbies = [new Lobby()];
 const players = [];
@@ -33,7 +33,7 @@ io.on('connection', (client) => {
     client.on(APP_CONSTANTS.CREATE_USER, async ({ name, password }) => {
         const user = await databaseHelper.getUser(name.toLowerCase());
         if (!user) {
-            await databaseHelper.createUser(name.toLowerCase(), password);
+            databaseHelper.createUser(name.toLowerCase(), password);
             const currentPlayer = new Player(name);
             currentPlayer.setClientId(client.id);
             players.push(currentPlayer)
@@ -43,10 +43,10 @@ io.on('connection', (client) => {
         }
     });
 
-    client.on(APP_CONSTANTS.LOGIN, async ({ name, password }) => { // TODO: Store password
+    client.on(APP_CONSTANTS.LOGIN, async ({ name, password }) => {
         const verified = await databaseHelper.verifyCredentials(name.toLowerCase(), password);
-        const currentPlayer = findPlayer(name) || new Player(name);
         if (verified) {
+            const currentPlayer = findPlayer(name) || new Player(name);
             players.push(currentPlayer);
             currentPlayer.setClientId(client.id);
             client.emit(APP_CONSTANTS.LOGGED_IN, currentPlayer.getPlayerData());

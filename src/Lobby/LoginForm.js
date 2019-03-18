@@ -46,7 +46,7 @@ function LoginForm({ loggedIn, error }) {
             }
             <div className="login-controls">
                 <button type="submit">Submit</button>
-                <button type="button" onClick={() => setShowRegister(!showRegister)}>{!showRegister ? 'Register' : 'Login'}</button> {/* TODO: Implement user creation page */}
+                <button type="button" onClick={() => setShowRegister(!showRegister)}>{!showRegister ? 'Register' : 'Login'}</button>
             </div>
         </form>
     )

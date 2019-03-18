@@ -10,12 +10,7 @@
             content: url("../../pictures//tokens//team-token.png");
         }
     }
-    img {
-        &.good {}
-        &.evil {
-            // TODO: Evil Card back
-        }
-    }
+    
     .name {
         background-color: darkslategray;
         color: white;

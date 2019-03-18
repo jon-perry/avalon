@@ -3,7 +3,6 @@ import Modal from 'react-modal';
 import Player from '../Players/Player';
 import './AssassinPhase.scss';
 
-// TODO: ensure that everyone can see who the assassin is
 export default function ({ players, gamePhase, selectedPlayers = [], questLeaderIndex }) {
     const customStyles = {
         content: {
