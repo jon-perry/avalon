@@ -47,7 +47,7 @@ class DatabaseHelper {
   }
 
   initDBO(MongoClient) {
-    MongoClient.connect('mongodb://localhost:27017/', (err, db) => {
+    MongoClient.connect('mongodb://localhost:27017/', {useNewUrlParser: true}, (err, db) => {
       if (err) {
         throw err;
       }
