@@ -44,7 +44,7 @@ class Player {
                     name: this.name,
                     character: (this.character === 'merlin') || (this.character === 'morgana') ? 'merlin' : undefined,
                 }
-            } else if (viewingPlayer.alignment === 'evil' && viewingPlayer.character !== 'oberon' && this.alignment === 'evil') {
+            } else if (viewingPlayer.alignment === 'evil' && viewingPlayer.character !== 'oberon' && this.character !== 'oberon' && this.alignment === 'evil') {
                 return {
                     id: this.id,
                     name: this.name,
