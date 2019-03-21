@@ -19,7 +19,7 @@ export default function GameScreen({ game }) {
     const clientPlayer = CookieService.GetPlayer();
     const isClientGood = game.players.find((player) => player.id === clientPlayer.id).alignment === 'good';
 
-    // TODO: Handle endgame screen (this let's us see the end game sceeen without crashing);
+    // this let's us see the end game sceeen without crashing 
     if (game.questNumber === 5) {
         game.questNumber -= 1;
         game.currentQuest = game.quests[game.questNumber];
@@ -30,26 +30,27 @@ export default function GameScreen({ game }) {
         <div className="game-screen">
             {
                 (game.phase === APP_CONSTANTS.GAME_PHASES.QUEST_PLAYER_APPROVAL) &&
-                (<ApproveReject
-                    selectedPlayers={game.selectedPlayers}
-                    players={game.players}
-                    quest={game.quests[game.questNumber]}
-                    questLeaderIndex={game.questLeaderIndex}
-                />)
+                    (<ApproveReject
+                        selectedPlayers={game.selectedPlayers}
+                        players={game.players}
+                        quest={game.quests[game.questNumber]}
+                        questLeaderIndex={game.questLeaderIndex}
+                    />)
             }
             {
-                (game.phase === APP_CONSTANTS.GAME_PHASES.RESULT_APPROVE_REJECT) && (<ApproveRejectResult players={game.players} quest={game.quests[game.questNumber]} />)
+                (game.phase === APP_CONSTANTS.GAME_PHASES.RESULT_APPROVE_REJECT) && 
+                    (<ApproveRejectResult players={game.players} quest={game.quests[game.questNumber]} />)
             }
             {
                 (game.phase === APP_CONSTANTS.GAME_PHASES.QUEST) &&
-                (<SuccessFail
-                    isOnQuest={game.selectedPlayers.some((playerId) => playerId === clientPlayer.id)}
-                    isGood={isClientGood}
-                />)
+                    (<SuccessFail
+                        isOnQuest={game.selectedPlayers.some((playerId) => playerId === clientPlayer.id)}
+                        isGood={isClientGood}
+                    />)
             }
             {
                 (game.phase === APP_CONSTANTS.GAME_PHASES.RESULT_SUCCESS_FAIL) &&
-                (<SuccessFailResults successFailVotes={successFailVotes} />)
+                    (<SuccessFailResults successFailVotes={successFailVotes} />)
             }
             {game.players && (
                 <>
