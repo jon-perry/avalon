@@ -16,6 +16,9 @@
         color: white;
         position: absolute;
         text-align: center;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
         top: 1rem;
         &.good {
             background-color: blue;

@@ -46,7 +46,7 @@ module.exports = {
                 EVIL_VOTES: 'Evil has won by votes!',
                 EVIL_QUESTS: 'Evil has won by quests!',
                 GOOD: 'Good has won!',
-                ASSASSIN_KILL: 'Assassin killed merlin!',
+                ASSASSIN_KILL: 'Assassin killed Merlin!',
         },
 
         ERROR: 'errorOccurred',

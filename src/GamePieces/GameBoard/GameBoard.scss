@@ -44,5 +44,12 @@
             width: 50px;
             height: 50px;
         }
+        
+        .quest-leader {
+            width: 300px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+        }
     }
 }
