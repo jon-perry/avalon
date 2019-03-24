@@ -40,10 +40,19 @@ export default function ({ id, players, leader }) {
                             <span className="player-name">{player.name}</span>
                             {
                                 activePlayer.id === player.id ?
-                                    (<input className="readiness" type="checkbox" name="isReady" value={isChecked} onChange={handleCheckChange} />) :
-                                    (<span className="readiness">Ready: {player.ready ? '☑' : '☐'}</span>)
+                                    (
+                                        <label htmlFor="isReady">Ready:
+                                            <input className="readiness" type="checkbox" id="isReady" name="isReady" value={isChecked} onChange={handleCheckChange} />
+                                        </label>
+                                    ) :
+                                    (
+                                        <label htmlFor={`${player.name}IsReady`}>Ready:
+                                            <input className="readiness" type="checkbox" name={`${player.name}IsReady`} checked={player.ready} disabled={true} />
+                                        </label>
+                                    )
                             }
-                        </div>)
+                        </div>
+                    )
                 })
             }
             <div className="lobby-controls">

@@ -1,24 +1,77 @@
-.lobby {
-    display: inline-flex;
-    flex-direction: column;
-    .player {
-        display: grid;
-        width: 230px;
-        grid-template-columns: 20px 1fr 70px;
-        .lobby-leader {
-            grid-column: 1 / span 1;
+.lobbies {
+    h1 {
+        margin-top: 0;
+        padding-top: 1rem;
+    }
+
+    .lobby {
+        h2 {
+            margin-top: 0;
         }
-        .player-name {
-            text-align: left;
-            grid-column: 2 / span 1;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-        .readiness {
-            white-space: nowrap;
-            text-align: right;
-            align-content: flex-end;
-        }
+        display: inline-flex;
+        flex-direction: column;
+        margin: 1rem;
+        background-color: rgba(255, 255, 255, 0.8);
+        border: 1px solid black;
+        border-radius: 5px;
+        padding: 1rem;
+
+        .player {
+            display: grid;
+            width: 230px;
+            grid-template-columns: 20px 1fr 70px;
+            .lobby-leader {
+                grid-column: 1 / span 1;
+            }
+            .player-name {
+                text-align: left;
+                grid-column: 2 / span 1;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+            .readiness {
+                white-space: nowrap;
+                text-align: left;
+                align-content: flex-end;
+            }
+        }   
     }
 }
+
+// taken from google play music cards (not currently using)
+// .card {
+//     background-color:    rgba(255, 255, 255, 0.8)    ;
+//     border-bottom-left-radius:    2px    ;
+//     border-bottom-right-radius:    2px    ;
+//     border-top-left-radius:    2px;
+//     border-top-right-radius: 2px;
+//     box-shadow:    rgba(0, 0, 0, 0.37) 0px 1px 4px 0px    ;
+//     color:    rgb(33, 33, 33)    ;
+//     cursor:    pointer    ;
+//     display:    inline-block    ;
+//     font-family:    Roboto, arial, "Noto Sans Japanese", sans-serif    ;
+//     font-size:    13px    ;
+//     font-weight:    300    ;
+//     margin-bottom:    8px    ;
+//     margin-left:    8px    ;
+//     margin-right:    8px    ;
+//     margin-top:    8px    ;
+//     outline-color:    rgb(33, 33, 33)    ;
+//     outline-style:    none    ;
+//     outline-width:    0px    ;
+//     overflow-x:    visible    ;
+//     overflow-y:    visible    ;
+//     position:    relative    ;
+//     transition-delay:    0s    ;
+//     transition-duration:    0.28s    ;
+//     transition-property:    box-shadow    ;
+//     transition-timing-function:    cubic-bezier(0.4, 0, 0.2, 1)    ;
+//     user-select:    none    ;
+//     vertical-align:    top    ;
+//     white-space:    nowrap    ;
+//     &:hover {
+//         box-shadow: 0 2px 2px 0 rgba(0,0,0,0.2), 0 6px 10px 0 rgba(0,0,0,0.3);
+//         transition: box-shadow 0.28s cubic-bezier(0.4,0,0.2,1);
+//     }
+// }

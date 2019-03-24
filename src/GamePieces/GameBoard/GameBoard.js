@@ -2,43 +2,45 @@ import React from 'react';
 import './GameBoard.scss';
 import Votes from './Votes/Votes.js';
 import Quests from './Quests/Quests';
+import PlayerInformations from '../Players/PlayerInformations';
 
-const Details = ({ playerCount, questLeader }) => {
-    const combinations = {
-        1: ["1 Player", "Test Mode"],
-        2: ["2 Player", "Test Mode"],
-        3: ["3 Player", "Test Mode"],
-        4: ["4 Player", "Test Mode"],
-        5: ["5 Players", "2 Minions of Morderd"],
-        6: ["6 Players", "2 Minions of Morderd"],
-        7: ["7 Players", "3 Minions of Mordred"],
-        8: ["8 Players", "3 Minions of Mordred"],
-        9: ["9 Players", "3 Minions of Mordred"],
-        10: ["10 Players", "4 Minions of Mordred"],
-    }
+const Details = ({ playerCount, questLeader, gameCharacters }) => {
+
+    const names = gameCharacters.map((character) => character.match(/([A-Z]+)/gi).join(' ').toUpperCase());
 
     return (
         <div className="details">
-            <div id="player-count">{combinations[playerCount][0]}</div>
-            <div id="quest-leader">{`Quest Leader: ${questLeader}`}</div>
-            <div id="mininons-of-mordred">{combinations[playerCount][1]}</div>
+            <div className="player-count">{playerCount} Players</div>
+            <div className="quest-leader">{`Quest Leader: ${questLeader}`}</div>
+            <div className="game-characters" title={names.join(', ')}>{names.join(', ')}</div>
         </div>
     );
 }
 
-export default function GameBoard({ players, quests, questLeader, numFailedVotes }) {
-    const source = require('../../pictures/game-boards/custom-variant.jpg')
-    const style = {
-        backgroundImage: `url(${source})`,
-        height: "749px",
-        backgroundSize: "cover"
-    }
+export default function GameBoard({ game }) {
+    const {
+        players,
+        quests,
+        failedVotes,
+        questLeaderIndex,
+        selectedPlayers,
+        currentQuest,
+        phase
+    } = game;
+    const questLeader = players[questLeaderIndex]
 
     return (
-        <div className="game-board" style={style}>
+        <div className="game-board" >
+            <PlayerInformations
+                players={players}
+                questLeaderIndex={questLeaderIndex}
+                selectedPlayers={selectedPlayers}
+                numberOfParticipants={currentQuest.numberOfParticipants}
+                gamePhase={phase}
+            />
             <Quests quests={quests} playerCount={players.length} />
-            <Votes numFailedVotes={numFailedVotes}/>
-            <Details playerCount={players.length} questLeader={questLeader} />
+            <Votes numFailedVotes={failedVotes} />
+            <Details playerCount={players.length} questLeader={questLeader.name} gameCharacters={game.characters}/>
         </div>
     );
 }

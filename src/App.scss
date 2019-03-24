@@ -1,5 +1,6 @@
 .App {
   text-align: center;
+  height: 100vh;
 }
 
 .App-logo {
@@ -28,5 +29,22 @@
   }
   to {
     transform: rotate(360deg);
+  }
+}
+
+.reset-button {
+  position: absolute;
+  bottom: 3px;
+  right: 3px;
+  button {
+    padding: 10px;
+    color: rgba(black, 0);
+    background: rgba(black, 0);
+    border: none;
+    &:hover {
+      color: white;
+      background: black;
+      border: 1px solid white;
+    }
   }
 }

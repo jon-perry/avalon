@@ -1,3 +1,5 @@
+## RESET BUTTON IS INVISIBLE (APPEARS ON HOVER) IN BOTTOM RIGHT CORNER TO SEND PLAYERS TO LOBBY TO START A NEW GAME
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts

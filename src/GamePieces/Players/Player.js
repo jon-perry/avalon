@@ -53,25 +53,25 @@ export default function Player({ gamePhase, name, id, character, alignment, sele
     }
 
     return (
-        <>
-            <div className={classes.join(' ')} onClick={() => handleSelectPlayer(id)}>
+        <div className={classes.join(' ')}>
+            <div className="player-content" onClick={() => handleSelectPlayer(id)}>
                 <div className={"name" + (alignment ? ` ${alignment}` : '')}>{name}</div>
                 <div className="card-image">
                     <CardImage character={character} alignment={alignment} />
                 </div>
-
             </div>
-            {((currentPlayer.id === questLeaderId) && (id === currentPlayer.id)) && (
-                <button
-                    className="confirm-quest-players"
-                    onClick={() => handleConfirmSelection()}
-                    disabled={(selectedPlayers.length !== numberOfParticipants) ||
-                        ((gamePhase !== APP_CONSTANTS.GAME_PHASES.QUEST_PLAYER_SELECTION) && (gamePhase !== APP_CONSTANTS.GAME_PHASES.ASSASSIN))}
-                >
-                    Confirm
-                </button>
-            )}
-        </>
+            {
+                ((currentPlayer.id === questLeaderId) && (id === currentPlayer.id)) && (
+                    <button
+                        className="confirm-quest-players"
+                        onClick={() => handleConfirmSelection()}
+                        disabled={(selectedPlayers.length !== numberOfParticipants) ||
+                            ((gamePhase !== APP_CONSTANTS.GAME_PHASES.QUEST_PLAYER_SELECTION) && (gamePhase !== APP_CONSTANTS.GAME_PHASES.ASSASSIN))}
+                    >
+                        Confirm
+                    </button>
+                )
+            }
+        </div>
     )
 }
-

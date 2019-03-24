@@ -39,6 +39,7 @@ export default function ({ isOnQuest, isGood }) {
   };
 
 
+
   return (
     isOnQuest &&
     (
@@ -47,7 +48,7 @@ export default function ({ isOnQuest, isGood }) {
           (!hasChosen) ?
             <div className="success-fail-vote">
               <div className="title">Vote Success or Fail</div>
-              <Success orientation="front" onClick={() => onClick('success')} selected={choice === 'success'} />
+              <Success isGood={isGood} orientation="front" onClick={() => onClick('success')} selected={choice === 'success'} />
               {!isGood && <Fail orientation="front" onClick={() => onClick('fail')} selected={choice === 'fail'} />}
               <button disabled={!choice} onClick={() => handleConfirm()}>Confim</button>
             </div> :

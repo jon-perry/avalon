@@ -1,26 +1,31 @@
 .questing-players {
     display: flex;
     flex-direction: row;
+    justify-content: space-evenly;
+    .player {
+        margin: 5px;
+    }
 }
 
 .approve-reject {
+    margin: 0 auto;
     width: max-content;
+    box-sizing: border-box;
     display: grid;
     grid-template-areas: "approve reject"
                          "confirm confirm";
-    // margin: 0;
 
     .approve-img {
         grid-area: approve;
-        &.selected {
-            border: 5px solid rgb(127, 195, 71);
-        }
     }
 
     .reject-img {
         grid-area: reject;
+    }
+
+    .approve-img, .reject-img {
         &.selected {
-            border: 5px solid rgb(127, 195, 71);
+            border: 5px solid rgb(255, 215, 0);
         }
     }
 
@@ -30,5 +35,6 @@
 
     img {
         width: 75px;
+        border: 5px solid transparent;
     }
 }

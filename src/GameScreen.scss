@@ -1,20 +1,26 @@
 .game-screen {
-    // TODO: Fix this to scale nicer 
-    // transform: scale(0.67, 0.67);
-    display: grid;
-    width: 80%;
-    // margin-left: -25%;
-    // margin-top: -12%;
-    grid-template-areas: "player-informations-grid success-fail"
-                         "game-board game-board"
+    height: 100%;
+
+    .winner {
+        box-sizing: border-box;
+        position: absolute;
+        z-index: 1;
+        width: 100%;
+        font-weight: bold;
+        color: white;
+        background-color: rgba(black, 0.85);
+        padding: 3rem;
+        top: 50%;
+        left: 0;
+        bottom: auto;
+        transform: translate(0, -50%);
+        &.good {
+            border-top: 2px solid blue;
+            border-bottom: 2px solid blue;
+        }
+        &.evil {
+            border-top: 2px solid red;
+            border-bottom: 2px solid red;
+        }
+    }
 }
-
-// .team-token-img {
-//     width: 120px;
-// }
-
-// @media screen and (max-width: 800px) {
-//     .game-screen {
-//         display: none;
-//     }
-// }

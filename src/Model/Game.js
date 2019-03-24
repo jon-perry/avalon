@@ -14,6 +14,7 @@ class Game {
         this.questLeaderIndex = Math.floor(Math.random() * this.players.length);
         this.selectedPlayers = [];
         this.failedVotes = 0;
+        this.characters = undefined;
         this.assignCharacters();
         this.winner = undefined;
     }
@@ -35,6 +36,7 @@ class Game {
     assignCharacters() {
         const GAME_VARIANTS = CHARACTER_GAME_VARIANTS[this.players.length];
         const randomVariant = Math.floor(Math.random() * GAME_VARIANTS.length);
+        this.characters = GAME_VARIANTS[randomVariant];
         const gameVariant = Game.Shuffle(GAME_VARIANTS[randomVariant]);
         this.players.forEach((player, index) => {
             player.character = gameVariant[index]
@@ -55,6 +57,7 @@ class Game {
             currentQuest: this.quests[this.questNumber],
             failedVotes: this.failedVotes,
             winner: this.winner,
+            characters: this.characters,
         }
     }
 

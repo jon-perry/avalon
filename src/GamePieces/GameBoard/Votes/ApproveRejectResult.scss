@@ -1,11 +1,39 @@
 .approve-reject-result{
     display: flex;
     flex-direction: row;
+    .player {
+        border: none;
+    }
     img {
         width: 120px;
+        height: 188px;
+        margin: 5px;
+        overflow: hidden;
     }
 
     .approve-img, .reject-img {
         height: 144px;
     }
+
+    .player-content {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        .name {
+            position: absolute;
+            top: 0;
+            width: 120px;
+        }
+    }
+
+    .player-approve-reject+.player-approve-reject {
+        border-left: 1px solid black;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
 }

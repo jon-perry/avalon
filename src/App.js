@@ -3,7 +3,7 @@ import GameScreen from './GameScreen';
 import LobbyScreen from './Lobby/LobbyScreen';
 import LoginForm from './Lobby/LoginForm';
 import CookieService from './Util/CookieService';
-import './App.css';
+import './App.scss';
 import './GamePieces/GameBoard/Votes/ApproveReject';
 const APP_CONSTANTS = require('./AppConstants');
 
@@ -16,12 +16,17 @@ const ResetButton = ({ onClick }) => (
 )
 
 const io = require('socket.io-client');
-const socket = io.connect('localhost:8888');
+const socket = io.connect('192.0.208.246:8888');
 
 export default function App() {
   const loggedIn = useLoggedIn();
   const game = useGame();
   const error = useError();
+  const source = require('./pictures/game-boards/custom-variant.jpg')
+  const style = {
+    backgroundImage: `url(${source})`,
+    backgroundSize: "cover"
+  }
 
   const handleReset = () => {
     socket.emit('RESET', {});
@@ -30,7 +35,7 @@ export default function App() {
   return (
     <SocketContext.Provider value={socket}>
       <ResetButton onClick={handleReset} />
-      <div className="App">
+      <div className="App" style={style}>
         {game ? (<GameScreen game={game} />) : !loggedIn ? (<LoginForm loggedIn={loggedIn} error={error} />) : (<LobbyScreen />)}
       </div>
     </SocketContext.Provider>

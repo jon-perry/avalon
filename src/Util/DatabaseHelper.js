@@ -1,20 +1,21 @@
 class DatabaseHelper {
   constructor(MongoClient) {
-    this.DBO = this.initDBO(MongoClient);
+    this.initDBO(MongoClient)
+      .then((dbo) => {
+        this.DBO = dbo;
+      })
+      .catch((err) => {
+        throw err;
+      });
     this.usersCollection = 'users';
     this.url = 'mongodb://localhost:27017/';
   }
 
   getUser(name) {
-    if (!this.DBO) {
-      console.log('database not created yet');
-      return;
-    }
-
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       this.DBO.collection(this.usersCollection).findOne({ name: name }, (err, res) => {
         if (err) {
-          throw err
+          reject(err)
         }
         resolve(res);
       });
@@ -22,11 +23,6 @@ class DatabaseHelper {
   }
 
   createUser(name, password) {
-    if (!this.DBO) {
-      console.log('database not created yet');
-      return;
-    }
-
     this.DBO.collection(this.usersCollection).insertOne({ name: name, password: password }, (err, res) => {
       if (err) {
         throw err;
@@ -35,10 +31,6 @@ class DatabaseHelper {
   }
 
   async verifyCredentials(name, password) {
-    if (!this.DBO) {
-      console.log('database not created yet');
-      return;
-    }
     const user = await this.getUser(name);
     if (user) {
       return user.password == password;
@@ -47,26 +39,23 @@ class DatabaseHelper {
   }
 
   initDBO(MongoClient) {
-    MongoClient.connect('mongodb://localhost:27017/', {useNewUrlParser: true}, (err, db) => {
-      if (err) {
-        throw err;
-      }
-      this.DBO = db.db('avalon');
+    return new Promise((resolve, reject) => {
+      MongoClient.connect('mongodb://localhost:27017/', { useNewUrlParser: true }, (err, db) => {
+        if (err) {
+          reject(err)
+        }
+        resolve(db.db('avalon'))
+      });
     });
   }
 
-  async deleterAllUsers() {
-    if (!this.DBO) {
-      console.log('database not created yet');
-      return;
-    }
+  deleteAllUsers() {
     this.DBO.collection(this.usersCollection).drop((err, res) => {
       if (err) {
         throw err;
       }
-
       console.log('All users deleted');
-    })
+    });
   }
 }
 
