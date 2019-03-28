@@ -53,5 +53,6 @@ module.exports = {
         ERRORS: {
                 NAME_TAKEN: 'Username taken',
                 WRONG_CREDENTIALS: 'Wrong Credentials',
+                NO_PASSWORD_ENTERED: 'No password entered',
         }
 }
