@@ -16,7 +16,7 @@ const ResetButton = ({ onClick }) => (
 )
 
 const io = require('socket.io-client');
-const socket = io.connect('192.0.208.246:8888');
+const socket = io.connect('localhost:8888');
 
 export default function App() {
   const loggedIn = useLoggedIn();

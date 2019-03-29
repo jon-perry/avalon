@@ -25,7 +25,10 @@ function LoginForm({ loggedIn, error }) {
             }
             socket.emit(APP_CONSTANTS.LOGIN, { name, password });
         } else {
-            if (password !== reEnteredPassword) {
+            if (password === '') {
+                setClientError('Enter a password');
+            }
+            else if (password !== reEnteredPassword) {
                 setClientError('Passwords do not match');
             } else {
                 setClientError('');
@@ -33,6 +36,10 @@ function LoginForm({ loggedIn, error }) {
             }
         }
     }
+    const handleButtonClick = () => {
+        setShowRegister(!showRegister);
+        setClientError('');
+    };
 
     return loggedIn === undefined ? (<div>Loading...</div>) : (
         <form className="login-form" onSubmit={submit}>
@@ -46,7 +53,7 @@ function LoginForm({ loggedIn, error }) {
             }
             <div className="login-controls">
                 <button type="submit">Submit</button>
-                <button type="button" onClick={() => setShowRegister(!showRegister)}>{!showRegister ? 'Register' : 'Login'}</button>
+                <button type="button" onClick={() => handleButtonClick()}>{!showRegister ? 'Register' : 'Login'}</button>
             </div>
         </form>
     )

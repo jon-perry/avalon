@@ -38,6 +38,8 @@ io.on('connection', (client) => {
             currentPlayer.setClientId(client.id);
             players.push(currentPlayer)
             client.emit(APP_CONSTANTS.LOGGED_IN, currentPlayer.getPlayerData());
+        } else if (password === '') {
+            client.emit(APP_CONSTANTS.ERROR, { error: APP_CONSTANTS.ERRORS.NO_PASSWORD_ENTERED });
         } else {
             client.emit(APP_CONSTANTS.ERROR, { error: APP_CONSTANTS.ERRORS.NAME_TAKEN });
         }
