@@ -9,24 +9,26 @@ I recommend having a game running in your main browser and also opening an incog
 
 I was able to play online for about two hours with five people, talking over VoiP, playing the game quite close to how it would go in person (barring you cannot see facial expressions). One bug was encountered very early (when 3 people were testing and waiting for others) and fixed. Once 5 people were playing, numerous games were played without issue. One problem is that the application is not user-friendly to people who have not played the game before. After a game or two, people play-testing did not have problems navigating and using the UI.
 
+The main idea of the game is players are assigned characters (either good or evil) and go on quests. Good wins by having three successful quests. Evil wins by having three failed quests, 5 failed team votes, or they kill Merlin. A lot of the game is done outside the UI (VoIP) and discussing who is going on the quests, why they should or shouldn't be allowed to go, and players deducing which roles other players are.
+
 ## Flow of the Application / How to Play
 You can login or create a new account from the entry point.
 Once logged in to an account, there is a lobby screen (currently only one lobby) where players can join
 a lobby. The first person to join is the lobby leader and can start the game once all players in the lobby
 have readied up.
 
-Once the game starts, there are multiple different phases which take place on each turn of the game until a winner
-is determined. The first phase has a Quest Leader (outlined with a dashed yellow border) who selected players to go on
-the a quest (quests in a normal game variant go from left to right). Once the quest leader has selected the appropriate 
+Once the game starts, there are multiple different phases which take place on each round of the game until a winner
+is determined. The first phase has a Quest Leader (outlined with a dashed yellow border) selects players to go on
+the quest (quests in a normal game variant go from left to right). Once the quest leader has selected the appropriate 
 amount of players and confirmed their choice, all players in the game then either approve or reject the quest participants.
 
 Once all players have made their choice to approve or reject the selected quest players, all players see how each other voted.
 
-If the result is a rejection of the selected quest players, the amount of failed votes is incremented. If there is not 5 failed votes, a new quest leader promoted who then selects players to approve/reject for the same quest.
+If the result is a rejection of the selected quest players, the amount of failed votes is incremented. If there is not 5 failed votes, a new quest leader is promoted who then selects players to approve/reject for the same quest.
 
 If the result is an approval, the selected players go on the quest and each player must vote success/fail (Only evil/bad guys have the option to vote fail).
 
-After all players on the quest vote success or fail, the results are showed to all players so they can see the result of the quest. Only how the players voted is shown, not how each player voted. 
+After all players on the quest vote success or fail, the results are shown to all players so they can see the result of the quest. Only how the players voted is shown, not how each player voted. This is important because if two evil players are on a quest and there are two fails shown, you know two of the players on the quest are evil.
 
 ## TODOs
 0. Allow the lobby leader to select preset game variants, or even select which characters to include in the game
