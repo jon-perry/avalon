@@ -125,17 +125,20 @@ class Game {
 
     getWinner() {
         const questFails = this.quests.map(quest => quest.didPass)
-                                      .filter(result => result === false);
+            .filter(result => result === false);
         const questSuccesses = this.quests.map(quest => quest.didPass)
-                                          .filter(result => result === true);
+            .filter(result => result === true);
         if (this.failedVotes === 5) {
             return APP_CONSTANTS.WINNER.EVIL_VOTES
         } else if (questFails.length === 3) {
             return APP_CONSTANTS.WINNER.EVIL_QUESTS;
         } else if (questSuccesses.length === 3) {
             const assassin = this.players.map(player => player.character)
-                                         .find(character => character === 'assassin');
-            if (assassin) {
+                .find(character => character === 'assassin');
+            const merlin = this.players.map(player => player.character)
+                .find(character => character === 'merlin');
+                
+            if (assassin && merlin) {
                 return APP_CONSTANTS.WINNER.ASSASSIN_EXISTS
             } else {
                 return APP_CONSTANTS.WINNER.GOOD
