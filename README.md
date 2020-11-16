@@ -1,5 +1,5 @@
 ### Main game screen:
-![Main game screen](https://i.imgur.com/q52taaO.png)
+![Main game screen](https://i.imgur.com/Jl6dgJc.png)
 
 ### Voting screen: 
 ![Voting screen](https://i.imgur.com/LoA79js.png)
