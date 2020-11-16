@@ -1,3 +1,9 @@
+### Main game screen:
+![Main game screen](https://i.imgur.com/q52taaO.png)
+
+### Voting screen: 
+![Voting screen](https://i.imgur.com/LoA79js.png)
+
 ## TO RUN:
 ### 0. npm install
 ### 1. nodemon server
