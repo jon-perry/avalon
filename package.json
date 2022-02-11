@@ -5,7 +5,7 @@
   "dependencies": {
     "js-cookie": "^2.2.0",
     "mongodb": "^3.1.13",
-    "node-sass": "^4.11.0",
+    "node-sass": "^7.0.0",
     "react": "^16.8.1",
     "react-dom": "^16.8.1",
     "react-modal": "^3.8.1",
